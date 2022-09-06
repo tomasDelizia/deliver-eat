@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-pedido-lo-que-sea',
@@ -12,6 +13,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
   ciudades: string[] = ['Córdoba', 'San Francisco', 'Villa General Belgrano'];
   momentosEntrega: string[] = ['Lo antes posible', 'Programar ahora'];
   formasPago: string[] = ['Efectivo', 'Tarjeta de Crédito MasterCard'];
+
+  subioImagen: boolean = false;
+
+  imagen: any;
 
   // @ts-ignore
   formPedido: FormGroup;
@@ -110,5 +115,51 @@ export class PedidoLoQueSeaComponent implements OnInit {
         arrFecha[1] - 1,
         arrFecha[0]
       ).toISOString();
+  }
+
+  // Traer la imagen
+  validarArchivo(evento: any): void {
+    const extensionesPermitidas = ['jpg', 'JPG'];
+    const limiteTamano = 5_000_000;
+
+    const archivo = evento.target.files[0];
+
+    const tamanoImagen = archivo.size;
+    const nombreArchivo = archivo.name;
+    const extensionArchivo = nombreArchivo.split(".").pop();
+
+    if(!extensionesPermitidas.includes(extensionArchivo)) {
+      alert("El tipo de imagen no es el permitido. Por favor, suba una imagen con extensión .jpg o .JPG");
+      return;
+    } else if (tamanoImagen > limiteTamano) {
+      alert("El tamaño de la imagen es demasiado grande. Por favor, suba un archivo menor a 5MB.");
+      return;
+    } else {
+      this.subioImagen = true;
+      this.convertToBase64(archivo);
+    }
+  }
+
+  // Convierte un archivo binario en un texto en base 64.
+  convertToBase64(archivo: File) {
+    const observable = new Observable((subscriber : any) => {
+      this.readFile(archivo,subscriber);
+    });
+    observable.subscribe((imagen) => {
+      this.imagen = imagen;
+    });
+  }
+
+  readFile(archivo: File, subscriber: any) {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(archivo);
+
+    fileReader.onload = () => {
+      subscriber.next(fileReader.result);
+      subscriber.complete();
+    };
+    fileReader.onerror = (error) => {
+      subscriber.error(error)
+    }
   }
 }
