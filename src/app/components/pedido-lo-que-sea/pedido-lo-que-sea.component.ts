@@ -72,7 +72,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
         null],
       horaEntrega: [
         null],
-      formaPago: ['Efectivo'],
+      formaPago: ['Efectivo', Validators.required],
       montoAAbonar: [
         null,
         [Validators.min(50), Validators.max(999999)]],
