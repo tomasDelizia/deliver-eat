@@ -13,6 +13,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
   ciudades: string[] = ['Córdoba', 'San Francisco', 'Villa General Belgrano'];
   momentosEntrega: string[] = ['Lo antes posible', 'Programar ahora'];
   formasPago: string[] = ['Efectivo', 'Tarjeta de Crédito MasterCard'];
+  momentoEntrega: string[] = ['Lo antes posible', 'Elegir fecha y hora']
 
   subioImagen: boolean = false;
 

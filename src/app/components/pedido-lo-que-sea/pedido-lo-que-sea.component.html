@@ -35,7 +35,7 @@
     </div>
 
     <fieldset>
-      <legend>Ciudad comercio</legend>
+      <legend>Direccion comercio</legend>
       <!--campos Calle nombre y altura de comercio-->
       <div class="row form-group my-3">
         <label class="col-form-label col-sm-1" for="calleNombreComercio">
@@ -91,12 +91,26 @@
         </div>
       </div>
 
-      <!--AGREGAR REFERENCIA-->
+      <div class="row form-group my-3">
+        <label class="col-form-label col-sm-auto" for="referenciaComercio">
+          Referencia (Opcional)
+        </label>
+
+        <div class="col-sm-3">
+          <input id="referenciaComercio" type="text" name="referenciaComercio" class="form-control"/>
+        </div>
+
+        <div class="text-danger" *ngIf="
+        formPedido.controls['referenciaComercio'].errors?.['minlength'] ||
+        formPedido.controls['referenciaComercio'].errors?.['maxlength'] ">
+          Dato texto, 3 a 50 caracteres.
+        </div>
+      </div>
 
     </fieldset> <hr>
 
     <fieldset>
-      <legend>Ciudad entrega</legend>
+      <legend>Dirección entrega</legend>
       <!--campos Calle nombre y altura de domicilio-->
       <div class="row form-group my-3">
         <label class="col-form-label col-sm-1" for="calleNombreDomicilio">
@@ -132,6 +146,46 @@
         </div>
       </div>
 
+      <div class="row form-group my-3">
+        <label><input type="checkbox" id="esDepto" #EsDepto value="first_checkbox"> Es un departamento</label>
+      </div>
+
+      <!--MOSTRAR SOLO SI EL CHECKBOX ESTA MARCADO--> <!--Este *ngIf no funciona-->
+
+      <div class="row form-group my-3"  *ngIf="EsDepto.checked">
+        <label class="col-form-label col-sm-1" for="pisoDepartamento">
+          Piso <span class="text-danger">*</span>
+        </label>
+
+        <div class="col-sm-3">
+          <input id="pisoDepartamento" type="text" name="pisoDepartamento" class="form-control" formControlName="pisoDepartamento" [ngClass]="{
+          'is-invalid': (formPedido.controls['pisoDomicilio'].touched || submitted) && formPedido.controls['pisoDomicilio'].errors}"/>
+          <div class="text-danger" *ngIf="(formPedido.controls['pisoDomicilio'].touched || submitted) && formPedido.controls['pisoDomicilio'].errors?.['required']">
+            Dato requerido.
+          </div>
+
+          <div class="text-danger" *ngIf="formPedido.controls['pisoDomicilio'].errors?.['pattern']">
+            Dato texto, 1 a 2 caracteres.
+          </div>
+        </div>
+
+        <label class="col-form-label col-sm-auto" for="letraDepartamento">
+          Letra <span class="text-danger">*</span>
+        </label>
+
+        <div class="col-sm-3">
+          <input id="letraDepartamento" type="text" name="letraDepartamento" class="form-control" formControlName="letraDepartamento" [ngClass]="{
+          'is-invalid': (formPedido.controls['deptoDomicilio'].touched || submitted) && formPedido.controls['deptoDomicilio'].errors}"/>
+          <div class="text-danger" *ngIf="(formPedido.controls['deptoDomicilio'].touched || submitted) && formPedido.controls['deptoDomicilio'].errors?.['required']">
+            Dato requerido.
+          </div>
+
+          <div class="text-danger" *ngIf="formPedido.controls['deptoDomicilio'].errors?.['pattern']">
+            Dato alfabético, 1 dígito.
+          </div>
+        </div>
+      </div>
+
       <!--campos Ciudad domicilio-->
       <div class="row form-group my-3">
         <label class="col-form-label col-sm-1" for="ciudadDomicilio">
@@ -151,79 +205,164 @@
         </div>
       </div>
 
-      <!--AGREGAR REFERENCIA-->
-
       <div class="row form-group my-3">
-        <label><input type="checkbox" id="esDepto" value="first_checkbox"> Es un departamento</label>
-      </div>
-
-      <!--MOSTRAR SOLO SI EL CHECKBOX ESTA MARCADO-->
-
-      <div class="row form-group my-3">
-        <label class="col-form-label col-sm-1" for="pisoDepartamento">
-          Piso <span class="text-danger">*</span>
+        <label class="col-form-label col-sm-auto" for="referenciaComercio">
+          Referencia (Opcional)
         </label>
 
         <div class="col-sm-3">
-          <input id="pisoDepartamento" type="text" name="pisoDepartamento" class="form-control" formControlName="pisoDepartamento" [ngClass]="{
-          'is-invalid': (formPedido.controls['pisoDomicilio'].touched || submitted) && formPedido.controls['pisoDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['pisoDomicilio'].touched || submitted) && formPedido.controls['pisoDomicilio'].errors?.['required']">
-            Dato requerido.
-          </div>
-
-          <div class="text-danger" *ngIf="formPedido.controls['pisoDomicilio'].errors?.['minlength'] ||formPedido.controls['pisoDomicilio'].errors?.['maxlength'] ">
-            Dato texto, 3 a 50 caracteres.
-          </div>
+          <input id="referenciaComercio" type="text" name="referenciaComercio" class="form-control"/>
         </div>
 
-        <label class="col-form-label col-sm-auto" for="letraDepartamento">
-          Letra <span class="text-danger">*</span>
+        <div class="text-danger" *ngIf="
+        formPedido.controls['referenciaDomicilio'].errors?.['minlength'] ||
+        formPedido.controls['referenciaDomicilio'].errors?.['maxlength'] ">
+          Dato texto, 3 a 50 caracteres.
+        </div>
+
+      </div>
+
+    </fieldset>
+
+    <hr>
+
+    <!--campos de Entrega-->
+    <fieldset>
+
+      <legend>Entrega</legend>
+
+      <div class="row form-group my-3">
+        <label class="col-form-label col-sm-3" for="momentoEntrega">
+          Momento de Entrega <span class="text-danger">*</span>
         </label>
-
-        <div class="col-sm-3">
-          <input id="letraDepartamento" type="text" name="letraDepartamento" class="form-control" formControlName="letraDepartamento" [ngClass]="{
-          'is-invalid': (formPedido.controls['deptoDomicilio'].touched || submitted) && formPedido.controls['deptoDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['deptoDomicilio'].touched || submitted) && formPedido.controls['deptoDomicilio'].errors?.['required']">
+  
+        <div class="col-sm-6">
+          <select id="momentoEntrega" name="momentoEntrega"  #momentoDeEntrega class="form-select" formControlName="momentoEntrega" [ngClass]="{'is-invalid': (formPedido.controls['momentoEntrega'].touched || submitted)
+            && formPedido.controls['momentoEntrega'].errors}">
+            <option *ngFor="let opt of momentoEntrega" [ngValue]="opt">
+              {{ opt }}
+            </option>
+          </select>
+          <div class="text-danger" *ngIf="(formPedido.controls['momentoEntrega'].touched || submitted) && formPedido.controls['momentoEntrega'].errors?.['required']">
             Dato requerido.
           </div>
+        </div>
+      </div>
 
-          <div class="text-danger" *ngIf="formPedido.controls['deptoDomicilio'].errors?.['pattern']">
-            Dato numérico, 1 a 5 dígitos.
+      <!--campos momento de entrega-->
+      
+      <div class="row form-group my-3" *ngIf="momentoDeEntrega.selectedIndex ===1">
+
+        <label class="col-form-label col-sm-auto" for="fechaEntrega">
+          Fecha <span class="text-danger">*</span>
+        </label>
+  
+        <div class="col-sm-2" >
+            <input id="fechaEntrega" type="date" name="fechaEntrega" class="form-control" formControlName="fechaEntrega" />
+        </div>
+
+        <label class="col-form-label col-sm-auto" for="horaEntrega">
+         Hora <span class="text-danger">*</span>
+        </label>
+  
+        <div class="col-sm-2">
+          <input id="horaEntrega" type="time" name="horaEntrega" class="form-control" formControlName="horaEntrega" />
+        </div>
+      </div>
+
+    </fieldset>
+
+    <hr>
+
+    <fieldset>
+      <!--campos Total a pagar-->
+      <div class="row form-group my-3">
+        <label class="col-form-label col-sm-auto" for="totalPagar">
+          Total a pagar <span class="text-danger">*</span>
+        </label>
+  
+        <div class="col-sm-2">
+          <input id="totalPagar" type="text" name="totalPagar" class="form-control" formControlName="totalPagar" readonly="readonly" value="$100"/>
+        </div>
+      </div>
+  
+      <!--campos Forma de pago-->
+      <div class="row form-group my-3">
+        <label class="col-form-label col-sm-3" for="FormaDePago">
+          Forma de pago <span class="text-danger">*</span>
+        </label>
+  
+        <div class="col-sm-6">
+          <select id="FormaDePago" name="FormaDePago" #FormaDePago class="form-select" formControlName="FormaDePago" [ngClass]="{'is-invalid': (formPedido.controls['formaPago'].touched || submitted)
+            && formPedido.controls['formaPago'].errors}">
+            <option *ngFor="let opt of formasPago" [ngValue]="opt">
+              {{ opt }}
+            </option>
+          </select>
+          <div class="text-danger" *ngIf="(formPedido.controls['formaPago'].touched || submitted) && formPedido.controls['formaPago'].errors?.['required']">
+            Dato requerido.
           </div>
         </div>
       </div>
 
-    </fieldset> <hr>
+      <!--campos Efectivo-->
+      <div class="row form-group my-3" *ngIf="FormaDePago.selectedIndex ===0">
 
-    <!--campos Total a pagar-->
-    <div class="row form-group my-3">
-      <label class="col-form-label col-sm-auto" for="totalPagar">
-        Total a pagar <span class="text-danger">*</span>
-      </label>
+        <label class="col-form-label col-sm-auto" for="montoAAbonar">
+          Monto a abonar <span class="text-danger">*</span>
+         </label>
+   
+         <div class="col-sm-2">
+           <input id="montoAAbonar" type="text" name="montoAAbonar" class="form-control" formControlName="montoAAbonar" />
+         </div>
 
-      <div class="col-sm-2">
-        <input id="totalPagar" type="text" name="totalPagar" class="form-control" formControlName="totalPagar" readonly="readonly" value="$100"/>
       </div>
-    </div>
 
-    <!--campos Forma de pago-->
-    <div class="row form-group my-3">
-      <label class="col-form-label col-sm-1" for="FormaDePago">
-        Forma de pago <span class="text-danger">*</span>
-      </label>
+      <!--campos de Tarjeta-->
+      <div *ngIf="FormaDePago.selectedIndex === 1">
+        <div class="row form-group my-3">
 
-      <div class="col-sm-6">
-        <select id="FormaDePago" name="FormaDePago" class="form-select" formControlName="FormaDePago" [ngClass]="{'is-invalid': (formPedido.controls['formaPago'].touched || submitted)
-          && formPedido.controls['formaPago'].errors}">
-          <option *ngFor="let opt of formasPago" [ngValue]="opt">
-            {{ opt }}
-          </option>
-        </select>
-        <div class="text-danger" *ngIf="(formPedido.controls['formaPago'].touched || submitted) && formPedido.controls['formaPago'].errors?.['required']">
-          Dato requerido.
+          <label class="col-form-label col-sm-auto" for="nroTarjeta">
+            Numero de tarjeta <span class="text-danger">*</span>
+          </label>
+    
+          <div class="col-sm-2">
+            <input id="nroTarjeta" type="text" name="nroTarjeta" class="form-control" formControlName="nroTarjeta" />
+          </div>
+
+          <label class="col-form-label col-sm-auto" for="titularTarjeta">
+            Titular <span class="text-danger">*</span>
+          </label>
+    
+          <div class="col-sm-2">
+            <input id="titularTarjeta" type="text" name="titularTarjeta" class="form-control" formControlName="titularTarjeta" />
+          </div>
+
         </div>
+
+        <div class="row form-group my-3">
+
+          <label class="col-form-label col-sm-auto" for="fechaVencimientoTarjeta">
+            Fecha de Vencimiento <span class="text-danger">*</span>
+          </label>
+    
+          <div class="col-sm-2">
+            <input id="fechaVencimientoTarjeta" type="text" name="fechaVencimientoTarjeta" class="form-control" formControlName="fechaVencimientoTarjeta" placeholder="MM/AA"/>
+          </div>
+
+          <label class="col-form-label col-sm-auto" for="codigoSeguridadTarjeta">
+            Codigo de Seguridad <span class="text-danger">*</span>
+          </label>
+    
+          <div class="col-sm-2">
+            <input id="codigoSeguridadTarjeta" type="text" name="codigoSeguridadTarjeta" class="form-control" formControlName="codigoSeguridadTarjeta" />
+          </div>
+
+        </div>
+
       </div>
-    </div>
+  
+    </fieldset>
 
 
 
