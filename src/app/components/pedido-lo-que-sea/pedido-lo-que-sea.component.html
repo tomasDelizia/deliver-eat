@@ -81,10 +81,12 @@
         <div class="col-sm-6">
           <select id="ciudadComercio" name="ciudadComercio" class="form-select" formControlName="ciudadComercio" [ngClass]="{'is-invalid': (formPedido.controls['ciudadComercio'].touched || submitted)
           && formPedido.controls['ciudadComercio'].errors}">
-            <option *ngFor="let opt of ciudades" [ngValue]="opt">
-              {{ opt }}
-            </option>
+            <option value="null" selected>Seleccione una ciudad...</option>
+            <option value="Cor">Córdoba</option>
+            <option value="Sf">San Francisco</option>
+            <option value="Vgb">Villa General Belgrano</option>
           </select>
+
           <div class="text-danger" *ngIf="(formPedido.controls['ciudadComercio'].touched || submitted) && formPedido.controls['ciudadComercio'].errors?.['required']">
             Dato requerido.
           </div>
@@ -195,9 +197,10 @@
         <div class="col-sm-6">
           <select id="ciudadDomicilio" name="ciudadDomicilio" class="form-select" formControlName="ciudadDomicilio" [ngClass]="{'is-invalid': (formPedido.controls['ciudadDomicilio'].touched || submitted)
           && formPedido.controls['ciudadDomicilio'].errors}">
-            <option *ngFor="let opt of ciudades" [ngValue]="opt">
-              {{ opt }}
-            </option>
+            <option value="null" selected>Seleccione una ciudad...</option>
+            <option value="Cor">Córdoba</option>
+            <option value="Sf">San Francisco</option>
+            <option value="Vgb">Villa General Belgrano</option>
           </select>
           <div class="text-danger" *ngIf="(formPedido.controls['ciudadDomicilio'].touched || submitted) && formPedido.controls['ciudadDomicilio'].errors?.['required']">
             Dato requerido.
@@ -205,13 +208,13 @@
         </div>
       </div>
 
-      <div class="row form-group my-3">
-        <label class="col-form-label col-sm-auto" for="referenciaComercio">
+      <div class="row form-group my-5">
+        <label class="col-form-label col-sm-auto" for="referenciaDomicilio">
           Referencia (Opcional)
         </label>
 
         <div class="col-sm-3">
-          <input id="referenciaComercio" type="text" name="referenciaComercio" class="form-control"/>
+          <input id="referenciaDomicilio" type="text" name="referenciaDomicilio" class="form-control"/>
         </div>
 
         <div class="text-danger" *ngIf="
@@ -219,12 +222,9 @@
         formPedido.controls['referenciaDomicilio'].errors?.['maxlength'] ">
           Dato texto, 3 a 50 caracteres.
         </div>
-
       </div>
 
-    </fieldset>
-
-    <hr>
+    </fieldset><hr>
 
     <!--campos de Entrega-->
     <fieldset>
@@ -232,16 +232,16 @@
       <legend>Entrega</legend>
 
       <div class="row form-group my-3">
-        <label class="col-form-label col-sm-3" for="momentoEntrega">
+        <label class="col-form-label col-sm-2" for="momentoEntrega">
           Momento de Entrega <span class="text-danger">*</span>
         </label>
-  
-        <div class="col-sm-6">
-          <select id="momentoEntrega" name="momentoEntrega"  #momentoDeEntrega class="form-select" formControlName="momentoEntrega" [ngClass]="{'is-invalid': (formPedido.controls['momentoEntrega'].touched || submitted)
+
+        <div class="col-sm-3">
+          <select [value]="" id="momentoEntrega" name="momentoEntrega"  #momentoDeEntrega class="form-select" formControlName="momentoEntrega" [ngClass]="{'is-invalid': (formPedido.controls['momentoEntrega'].touched || submitted)
             && formPedido.controls['momentoEntrega'].errors}">
-            <option *ngFor="let opt of momentoEntrega" [ngValue]="opt">
-              {{ opt }}
-            </option>
+            <option value="null" selected>Seleccione el momento de entrega...</option>
+            <option value="Pa">Programar ahora</option>
+            <option value="Lap">Lo antes posible</option>
           </select>
           <div class="text-danger" *ngIf="(formPedido.controls['momentoEntrega'].touched || submitted) && formPedido.controls['momentoEntrega'].errors?.['required']">
             Dato requerido.
@@ -250,13 +250,13 @@
       </div>
 
       <!--campos momento de entrega-->
-      
+
       <div class="row form-group my-3" *ngIf="momentoDeEntrega.selectedIndex ===1">
 
         <label class="col-form-label col-sm-auto" for="fechaEntrega">
           Fecha <span class="text-danger">*</span>
         </label>
-  
+
         <div class="col-sm-2" >
             <input id="fechaEntrega" type="date" name="fechaEntrega" class="form-control" formControlName="fechaEntrega" />
         </div>
@@ -264,7 +264,7 @@
         <label class="col-form-label col-sm-auto" for="horaEntrega">
          Hora <span class="text-danger">*</span>
         </label>
-  
+
         <div class="col-sm-2">
           <input id="horaEntrega" type="time" name="horaEntrega" class="form-control" formControlName="horaEntrega" />
         </div>
@@ -280,24 +280,24 @@
         <label class="col-form-label col-sm-auto" for="totalPagar">
           Total a pagar <span class="text-danger">*</span>
         </label>
-  
+
         <div class="col-sm-2">
           <input id="totalPagar" type="text" name="totalPagar" class="form-control" formControlName="totalPagar" readonly="readonly" value="$100"/>
         </div>
       </div>
-  
+
       <!--campos Forma de pago-->
       <div class="row form-group my-3">
-        <label class="col-form-label col-sm-3" for="FormaDePago">
+        <label class="col-form-label col-sm-2" for="FormaDePago">
           Forma de pago <span class="text-danger">*</span>
         </label>
-  
+
         <div class="col-sm-6">
           <select id="FormaDePago" name="FormaDePago" #FormaDePago class="form-select" formControlName="FormaDePago" [ngClass]="{'is-invalid': (formPedido.controls['formaPago'].touched || submitted)
             && formPedido.controls['formaPago'].errors}">
-            <option *ngFor="let opt of formasPago" [ngValue]="opt">
-              {{ opt }}
-            </option>
+            <option value="null" selected>Seleccione una forma de pago...</option>
+            <option value="Tc">Tarjeta de Crédito MasterCard</option>
+            <option value="Efec">Efectivo</option>
           </select>
           <div class="text-danger" *ngIf="(formPedido.controls['formaPago'].touched || submitted) && formPedido.controls['formaPago'].errors?.['required']">
             Dato requerido.
@@ -306,12 +306,12 @@
       </div>
 
       <!--campos Efectivo-->
-      <div class="row form-group my-3" *ngIf="FormaDePago.selectedIndex ===0">
+      <div class="row form-group my-3" *ngIf="FormaDePago.selectedIndex ===2">
 
         <label class="col-form-label col-sm-auto" for="montoAAbonar">
           Monto a abonar <span class="text-danger">*</span>
          </label>
-   
+
          <div class="col-sm-2">
            <input id="montoAAbonar" type="text" name="montoAAbonar" class="form-control" formControlName="montoAAbonar" />
          </div>
@@ -325,7 +325,7 @@
           <label class="col-form-label col-sm-auto" for="nroTarjeta">
             Numero de tarjeta <span class="text-danger">*</span>
           </label>
-    
+
           <div class="col-sm-2">
             <input id="nroTarjeta" type="text" name="nroTarjeta" class="form-control" formControlName="nroTarjeta" />
           </div>
@@ -333,7 +333,7 @@
           <label class="col-form-label col-sm-auto" for="titularTarjeta">
             Titular <span class="text-danger">*</span>
           </label>
-    
+
           <div class="col-sm-2">
             <input id="titularTarjeta" type="text" name="titularTarjeta" class="form-control" formControlName="titularTarjeta" />
           </div>
@@ -345,7 +345,7 @@
           <label class="col-form-label col-sm-auto" for="fechaVencimientoTarjeta">
             Fecha de Vencimiento <span class="text-danger">*</span>
           </label>
-    
+
           <div class="col-sm-2">
             <input id="fechaVencimientoTarjeta" type="text" name="fechaVencimientoTarjeta" class="form-control" formControlName="fechaVencimientoTarjeta" placeholder="MM/AA"/>
           </div>
@@ -353,7 +353,7 @@
           <label class="col-form-label col-sm-auto" for="codigoSeguridadTarjeta">
             Codigo de Seguridad <span class="text-danger">*</span>
           </label>
-    
+
           <div class="col-sm-2">
             <input id="codigoSeguridadTarjeta" type="text" name="codigoSeguridadTarjeta" class="form-control" formControlName="codigoSeguridadTarjeta" />
           </div>
@@ -361,7 +361,7 @@
         </div>
 
       </div>
-  
+
     </fieldset>
 
 
