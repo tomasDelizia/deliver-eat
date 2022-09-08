@@ -70,7 +70,7 @@
         </label>
 
         <div class="col-sm-3">
-          <input id="calleNumeroComercio" type="text" name="calleNumeroComercio" class="form-control" formControlName="calleNumeroComercio" [ngClass]="{'is-invalid': (form['calleNumeroComercio'].touched || submitted)
+          <input id="calleNumeroComercio" type="number" name="calleNumeroComercio" class="form-control" formControlName="calleNumeroComercio" [ngClass]="{'is-invalid': (form['calleNumeroComercio'].touched || submitted)
           && form['calleNumeroComercio'].errors}"/>
           <div class="text-danger" *ngIf="(form['calleNumeroComercio'].touched || submitted) && form['calleNumeroComercio'].errors?.['required']">
             Dato requerido.
@@ -146,7 +146,7 @@
         </label>
 
         <div class="col-sm-3">
-          <input id="calleNumeroDomicilio" type="text" name="calleNumeroDomicilio"
+          <input id="calleNumeroDomicilio" type="number" name="calleNumeroDomicilio"
             class="form-control" formControlName="calleNumeroDomicilio"
             [ngClass]="{'is-invalid': (form['calleNumeroDomicilio'].touched || submitted) && form['calleNumeroDomicilio'].errors}"/>
           <div class="text-danger" *ngIf="(form['calleNumeroDomicilio'].touched || submitted) && form['calleNumeroDomicilio'].errors?.['required']">
@@ -174,6 +174,7 @@
         <div class="col-sm-3">
           <input id="pisoDepto" type="text" name="pisoDepto" class="form-control" formControlName="pisoDepto" [ngClass]="{
           'is-invalid': (form['pisoDepto'].touched || submitted) && form['pisoDepto'].errors}"/>
+
           <div class="text-danger" *ngIf="(form['pisoDepto'].touched || submitted) && form['pisoDepto'].errors?.['required']">
             Dato requerido.
           </div>
@@ -190,6 +191,10 @@
         <div class="col-sm-3">
           <input id="letraDepto" type="text" name="letraDepto" class="form-control" formControlName="letraDepto" [ngClass]="{
           'is-invalid': (form['letraDepto'].touched || submitted) && form['letraDepto'].errors}"/>
+
+          <div class="text-danger" *ngIf="(form['letraDepto'].touched || submitted) && form['letraDepto'].errors?.['required']">
+            Dato requerido.
+          </div>
 
           <div class="text-danger" *ngIf="form['letraDepto'].errors?.['pattern']">
             Dato alfabético, 1 dígito.
@@ -267,7 +272,17 @@
         </label>
 
         <div class="col-sm-2" >
-            <input id="fechaEntrega" type="date" name="fechaEntrega" class="form-control" formControlName="fechaEntrega" />
+          <input id="fechaEntrega" type="date" name="fechaEntrega" class="form-control" formControlName="fechaEntrega"
+            [ngClass]="{'is-invalid': (form['fechaEntrega'].touched || submitted) && form['fechaEntrega'].errors}"/>
+
+          <div class="text-danger" *ngIf="(form['fechaEntrega'].touched || submitted) && form['fechaEntrega'].errors?.['required']">
+            Dato requerido.
+          </div>
+
+          <div class="text-danger col-sm-auto" *ngIf="form['fechaEntrega'].errors?.['moreThanToday']">
+            La fecha debe ser igual o posterior a hoy.
+          </div>
+
         </div>
 
         <label class="col-form-label col-sm-auto" for="horaEntrega">
@@ -275,7 +290,17 @@
         </label>
 
         <div class="col-sm-2">
-          <input id="horaEntrega" type="time" name="horaEntrega" class="form-control" formControlName="horaEntrega" />
+          <input id="horaEntrega" type="time" name="horaEntrega" class="form-control" formControlName="horaEntrega"
+            [ngClass]="{'is-invalid': (form['horaEntrega'].touched || submitted) && form['horaEntrega'].errors}"/>
+
+          <div class="text-danger" *ngIf="(form['horaEntrega'].touched || submitted) && form['horaEntrega'].errors?.['required']">
+            Dato requerido.
+          </div>
+
+          <div class="text-danger col-sm-auto"
+            *ngIf="(form['horaEntrega'].touched || submitted) && !esHoraValida(form['fechaEntrega'].value, form['horaEntrega'].value)">
+            La hora no debe ser menor a la actual.
+          </div>
         </div>
       </div>
 
@@ -287,11 +312,11 @@
       <!--campos Total a pagar-->
       <div class="row form-group my-3">
         <label class="col-form-label col-sm-auto" for="totalPagar">
-          Total a pagar <span class="text-danger">*</span>
+          Total a pagar
         </label>
 
         <div class="col-sm-2">
-          <input id="totalPagar" type="text" name="totalPagar" class="form-control" readonly="readonly" value="$100"/>
+          <input id="totalPagar" type="text" name="totalPagar" readonly class="form-control" placeholder="$100"/>
         </div>
       </div>
 
@@ -309,6 +334,7 @@
             <option [ngValue]="'tarjeta'">Tarjeta de Crédito MasterCard</option>
             <option [ngValue]="'efectivo'">Efectivo</option>
           </select>
+
           <div class="text-danger" *ngIf="(form['formaPago'].touched || submitted) && form['formaPago'].errors?.['required']">
             Dato requerido.
           </div>
@@ -320,12 +346,17 @@
 
         <label class="col-form-label col-sm-auto" for="montoAAbonar">
           Monto a abonar <span class="text-danger">*</span>
-         </label>
+        </label>
 
-         <div class="col-sm-2">
-           <input id="montoAAbonar" type="text" name="montoAAbonar" class="form-control" formControlName="montoAAbonar"
-             [ngClass]="{'is-invalid': (form['montoAAbonar'].touched || submitted) && form['montoAAbonar'].errors}"/>
-         </div>
+        <div class="col-sm-2">
+          <input id="montoAAbonar" type="number" name="montoAAbonar" class="form-control" formControlName="montoAAbonar"
+            [ngClass]="{'is-invalid': (form['montoAAbonar'].touched || submitted) && form['montoAAbonar'].errors}"/>
+        </div>
+
+        <div class="text-danger col-sm-auto"
+          *ngIf="(form['montoAAbonar'].touched || submitted) && form['montoAAbonar'].errors?.['required']">
+          Dato requerido.
+        </div>
 
         <div class="text-danger col-sm-auto" *ngIf="form['montoAAbonar'].errors?.['min']">
           El monto mínimo es de $ 100.
@@ -346,8 +377,13 @@
           </label>
 
           <div class="col-sm-2">
-            <input id="nroTarjeta" type="text" name="nroTarjeta" class="form-control" formControlName="nroTarjeta"
+            <input id="nroTarjeta" type="number" name="nroTarjeta" class="form-control" formControlName="nroTarjeta"
               [ngClass]="{'is-invalid': (form['nroTarjeta'].touched || submitted) && form['nroTarjeta'].errors}"/>
+
+            <div class="text-danger"
+              *ngIf="(form['nroTarjeta'].touched || submitted) && form['nroTarjeta'].errors?.['required']">
+              Dato requerido.
+            </div>
 
             <div class="text-danger" *ngIf="form['nroTarjeta'].errors?.['pattern']">
               No es una tarjeta de crédito Master Card válida.
@@ -361,6 +397,11 @@
           <div class="col-sm-2">
             <input id="titularTarjeta" type="text" name="titularTarjeta" class="form-control" formControlName="titularTarjeta"
               [ngClass]="{'is-invalid': (form['titularTarjeta'].touched || submitted) && form['titularTarjeta'].errors}"/>
+
+            <div class="text-danger"
+              *ngIf="(form['titularTarjeta'].touched || submitted) && form['titularTarjeta'].errors?.['required']">
+              Dato requerido.
+            </div>
 
             <div class="text-danger"
               *ngIf="form['titularTarjeta'].errors?.['minlength'] || form['titularTarjeta'].errors?.['maxlength']">
@@ -379,6 +420,12 @@
           <div class="col-sm-2">
             <input id="fechaVencimientoTarjeta" type="text" name="fechaVencimientoTarjeta" class="form-control" formControlName="fechaVencimientoTarjeta" placeholder="MM/AAAA"
               [ngClass]="{'is-invalid': (form['fechaVencimientoTarjeta'].touched || submitted) && form['fechaVencimientoTarjeta'].errors}"/>
+
+            <div class="text-danger"
+              *ngIf="(form['fechaVencimientoTarjeta'].touched || submitted) && form['fechaVencimientoTarjeta'].errors?.['required']">
+              Dato requerido.
+            </div>
+
             <div class="text-danger" *ngIf="form['fechaVencimientoTarjeta'].errors?.['pattern']">
               La fecha de vencimiento debe ser mayor al mes actual.
             </div>
@@ -389,8 +436,13 @@
           </label>
 
           <div class="col-sm-2">
-            <input id="codigoSeguridadTarjeta" type="text" name="codigoSeguridadTarjeta" class="form-control" formControlName="codigoSeguridadTarjeta"
+            <input id="codigoSeguridadTarjeta" type="number" name="codigoSeguridadTarjeta" class="form-control" formControlName="codigoSeguridadTarjeta"
               [ngClass]="{'is-invalid': (form['codigoSeguridadTarjeta'].touched || submitted) && form['codigoSeguridadTarjeta'].errors}"/>
+
+            <div class="text-danger"
+              *ngIf="(form['codigoSeguridadTarjeta'].touched || submitted) && form['codigoSeguridadTarjeta'].errors?.['required']">
+              Dato requerido.
+            </div>
 
             <div class="text-danger" *ngIf="form['codigoSeguridadTarjeta'].errors?.['pattern']">
               Código de 3 números.

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {conditionalValidator} from "../../shared/utils/conditional.validator";
+import {conditionalValidator} from "../../shared/validators/conditional.validator";
+import {DateTimeValidator} from "../../shared/validators/date.time.validator";
 
 @Component({
   selector: 'app-pedido-lo-que-sea',
@@ -11,8 +12,6 @@ export class PedidoLoQueSeaComponent implements OnInit {
   titulo: string = 'Realizar un pedido de lo que sea';
 
   urlImagen: string;
-
-  esDepto: boolean = false;
 
   formPedido: FormGroup;
 
@@ -25,8 +24,23 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
     this.form['checkboxEsDepartamento'].valueChanges
       .subscribe(() => {
-        this.esDepto = !this.esDepto;
         this.form['pisoDepto'].updateValueAndValidity();
+        this.form['letraDepto'].updateValueAndValidity();
+      });
+
+    this.form['momentoEntrega'].valueChanges
+      .subscribe(() => {
+        this.form['fechaEntrega'].updateValueAndValidity();
+        this.form['horaEntrega'].updateValueAndValidity();
+      });
+
+    this.form['formaPago'].valueChanges
+      .subscribe(() => {
+        this.form['montoAAbonar'].updateValueAndValidity();
+        this.form['nroTarjeta'].updateValueAndValidity();
+        this.form['titularTarjeta'].updateValueAndValidity();
+        this.form['fechaVencimientoTarjeta'].updateValueAndValidity();
+        this.form['codigoSeguridadTarjeta'].updateValueAndValidity();
       });
   }
 
@@ -60,18 +74,34 @@ export class PedidoLoQueSeaComponent implements OnInit {
       pisoDepto: [null, [
         Validators.pattern("[0-9]{1,2}"),
         conditionalValidator(() => this.checkboxEsDepartamento, Validators.required)]],
-      letraDepto: [null, Validators.pattern("[A-Z]{1}")],
+      letraDepto: [null, [
+        Validators.pattern("[A-Z]{1}"),
+        conditionalValidator(() => this.checkboxEsDepartamento, Validators.required)]],
       ciudadDomicilio: [null ,Validators.required],
       referenciaDomicilio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       momentoEntrega: [null, Validators.required],
-      fechaEntrega: [null],
-      horaEntrega: [null],
+      fechaEntrega: [null, [
+        DateTimeValidator.moreThanToday,
+        conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)]],
+      horaEntrega: [null, conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)],
       formaPago: [null, Validators.required],
-      montoAAbonar: [null, [Validators.min(50), Validators.max(999999)]],
-      nroTarjeta: [null, Validators.pattern("5[0-5]{1}[0-9]{14}")],
-      titularTarjeta: [null, [Validators.minLength(4), Validators.maxLength(50)]],
-      fechaVencimientoTarjeta: [null, [Validators.pattern('(1[012][-/]2022)|((0[1-9]|1[012])[-/]20(2[3-9]{1}|[3-9]{2}))')]],
-      codigoSeguridadTarjeta: [ null, [Validators.pattern('[0-9]{3}')]]
+      montoAAbonar: [null, [
+        Validators.min(50),
+        Validators.max(999999),
+        conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]],
+      nroTarjeta: [null, [
+        Validators.pattern("5[0-5]{1}[0-9]{14}"),
+        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
+      titularTarjeta: [null, [
+        Validators.minLength(4),
+        Validators.maxLength(50),
+        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
+      fechaVencimientoTarjeta: [null, [
+        Validators.pattern('(1[012][-/]2022)|((0[1-9]|1[012])[-/]20(2[3-9]{1}|[3-9]{2}))'),
+        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
+      codigoSeguridadTarjeta: [ null, [
+        Validators.pattern('[0-9]{3}'),
+        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]]
     });
   }
 
@@ -101,6 +131,13 @@ export class PedidoLoQueSeaComponent implements OnInit {
       reader.onload = () => this.urlImagen = reader.result as string;
       reader.readAsDataURL(imagenASubir);
     }
+  }
+
+  esHoraValida(fecha: string, hora: string): boolean {
+    let hoy: string = new Date().toISOString().slice(0, 10);
+    let ahora: string = new Date().toTimeString().slice(0, 5);
+
+    return !(hoy === fecha && hora < ahora);
   }
 
   agregar() {

@@ -1,5 +1,5 @@
 import {ValidatorFn} from "@angular/forms";
-import {BooleanFn} from "./boolean.fn";
+import {BooleanFn} from "../utils/boolean.fn";
 
 /**
  * A conditional validator generator. Assigns a validator to the form control if the predicate function returns true on the moment of validation
