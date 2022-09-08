@@ -31,16 +31,15 @@
       <!--campo Imagen-->
       <div class="row form-group my-3">
         <!-- Subir imagen-->
-        <label for="imagen" class="btn btn-dark">Subir imagen</label>
+        <label class="col-form-label col-sm-auto">
+          Foto de lo que necesita (opcional)
+        </label>
+        <label for="imagen" class="btn btn-dark col-sm-auto">Subir imagen</label>
         <input id="imagen" style="visibility:hidden;" type="file" multiple accept=".jpg" (change)="onImagenChange($event)">
 
         <!-- Vista previa de imagen -->
         <div class="imagePreview" *ngIf="urlImagen && urlImagen !== ''">
           <img [src]="urlImagen" [alt]="" width="200px" height="200px">
-        </div>
-
-        <div class="text-danger" *ngIf="(urlImagen === '' || submitted) && form['imagen'].errors?.['required']">
-          La imagen es requerida.
         </div>
       </div>
     </fieldset>

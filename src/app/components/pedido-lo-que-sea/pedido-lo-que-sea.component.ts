@@ -30,7 +30,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
   private buildForm(): void {
     this.formPedido = this.formBuilder.group({
       descripcionPedido: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      imagen: [null, Validators.required],
+      imagen: [null],
       origenImagen: [null, Validators.required],
       calleNombreComercio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroComercio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
