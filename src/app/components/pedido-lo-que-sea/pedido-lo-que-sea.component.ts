@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {conditionalValidator} from "../../shared/utils/conditional.validator";
 
 @Component({
   selector: 'app-pedido-lo-que-sea',
@@ -17,11 +18,17 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   submitted: boolean = false;
 
-  constructor(private formBuilder: FormBuilder) {
-    this.buildForm();
-  }
+  constructor(private formBuilder: FormBuilder) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.buildForm();
+
+    this.form['checkboxEsDepartamento'].valueChanges
+      .subscribe(() => {
+        this.esDepto = !this.esDepto;
+        this.form['pisoDepto'].updateValueAndValidity();
+      });
+  }
 
   get form() {
     return this.formPedido.controls;
@@ -35,6 +42,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
     return this.form['formaPago'].value;
   }
 
+  get checkboxEsDepartamento() {
+    return this.form['checkboxEsDepartamento'].value;
+  }
+
   private buildForm(): void {
     this.formPedido = this.formBuilder.group({
       descripcionPedido: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
@@ -45,7 +56,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
       referenciaComercio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       calleNombreDomicilio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroDomicilio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
-      pisoDepto: [null, [Validators.pattern("[0-9]{1,2}")]],
+      checkboxEsDepartamento: [null],
+      pisoDepto: [null, [
+        Validators.pattern("[0-9]{1,2}"),
+        conditionalValidator(() => this.checkboxEsDepartamento, Validators.required)]],
       letraDepto: [null, Validators.pattern("[A-Z]{1}")],
       ciudadDomicilio: [null ,Validators.required],
       referenciaDomicilio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
@@ -87,10 +101,6 @@ export class PedidoLoQueSeaComponent implements OnInit {
       reader.onload = () => this.urlImagen = reader.result as string;
       reader.readAsDataURL(imagenASubir);
     }
-  }
-
-  onEsDeptoChange() {
-    this.esDepto = !this.esDepto;
   }
 
   agregar() {

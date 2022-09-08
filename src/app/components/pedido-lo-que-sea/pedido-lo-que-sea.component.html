@@ -161,12 +161,12 @@
 
       <div class="row form-group my-3">
         <label>
-          <input type="checkbox" id="esDepto" (change)="onEsDeptoChange()">
+          <input type="checkbox" id="esDepto" formControlName="checkboxEsDepartamento">
           Es un departamento
         </label>
       </div>
 
-      <div class="row form-group my-3" *ngIf="esDepto">
+      <div class="row form-group my-3" *ngIf="checkboxEsDepartamento">
         <label class="col-form-label col-sm-1" for="pisoDepto">
           Piso <span class="text-danger">*</span>
         </label>
