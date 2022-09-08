@@ -1,38 +1,49 @@
+<h1 class="text-center">{{titulo}}</h1>
+
 <!-- Registro de un Pedido de lo que Sea -->
 <form name='formPedido' [formGroup]='formPedido' class="bg-light">
 
   <fieldset>
-    <!--campo Descripción-->
-    <div class="form-group row my-3">
-      <label class="col-form-label col-sm-auto" for="descripcionPedido">
-        Descripción <span class="text-danger">*</span>
-      </label>
+    <fieldset>
+      <legend>Detalle del pedido</legend>
 
-      <div class="col-sm-5">
-        <input id="descripcionPedido" type="text" class="form-control" formControlName="descripcionPedido" [ngClass]="{'is-invalid': (formPedido.controls['descripcionPedido'].touched || submitted)
-        && formPedido.controls['descripcionPedido'].errors}"/>
+      <!--campo Descripción-->
+      <div class="form-group row my-3">
+        <label class="col-form-label col-sm-auto" for="descripcionPedido">
+          ¿Qué necesitás? <span class="text-danger">*</span>
+        </label>
 
-        <div class="text-danger" *ngIf="(formPedido.controls['descripcionPedido'].touched || submitted) && formPedido.controls['descripcionPedido'].errors?.['required']">
-          Dato requerido.
-        </div>
+        <div class="col-sm-5">
+          <input id="descripcionPedido" type="text" class="form-control" formControlName="descripcionPedido"
+            [ngClass]="{'is-invalid': (form['descripcionPedido'].touched || submitted) && form['descripcionPedido'].errors}"/>
 
-        <div class="text-danger" *ngIf="
-        formPedido.controls['descripcionPedido'].errors?.['minlength'] ||
-        formPedido.controls['descripcionPedido'].errors?.['maxlength'] ">
-          Dato texto, 3 a 30 caracteres.
+          <div class="text-danger" *ngIf="(form['descripcionPedido'].touched || submitted) && form['descripcionPedido'].errors?.['required']">
+            Dato requerido.
+          </div>
+
+          <div class="text-danger"
+            *ngIf="form['descripcionPedido'].errors?.['minlength'] || form['descripcionPedido'].errors?.['maxlength']">
+            Dato texto, 3 a 30 caracteres.
+          </div>
         </div>
       </div>
-    </div>
 
-    <!--campo imagen-->
-    <div class="row form-group-my-3">
-      <label for="archivo" class="btn btn-dark">Subir imagen</label>
-      <input id="archivo" style="visibility:hidden;" type="file" multiple accept=".jpg, .JPG" (change)="validarArchivo($event)" class="imagenCheck">
+      <!--campo Imagen-->
+      <div class="row form-group my-3">
+        <!-- Subir imagen-->
+        <label for="imagen" class="btn btn-dark">Subir imagen</label>
+        <input id="imagen" style="visibility:hidden;" type="file" multiple accept=".jpg" (change)="onImagenChange($event)">
 
-      <div *ngIf="subioImagen">
-        <img [src]="imagen" width="200px" height="200px" alt="">
+        <!-- Vista previa de imagen -->
+        <div class="imagePreview" *ngIf="urlImagen && urlImagen !== ''">
+          <img [src]="urlImagen" [alt]="" width="200px" height="200px">
+        </div>
+
+        <div class="text-danger" *ngIf="(urlImagen === '' || submitted) && form['imagen'].errors?.['required']">
+          La imagen es requerida.
+        </div>
       </div>
-    </div>
+    </fieldset>
 
     <fieldset>
       <legend>Direccion comercio</legend>
@@ -44,13 +55,13 @@
 
         <div class="col-sm-3">
           <input id="calleNombreComercio" type="text" name="calleNombreComercio" class="form-control" formControlName="calleNombreComercio" [ngClass]="{
-          'is-invalid': (formPedido.controls['calleNombreComercio'].touched || submitted)
-          && formPedido.controls['calleNombreComercio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['calleNombreComercio'].touched || submitted) && formPedido.controls['calleNombreComercio'].errors?.['required']">
+          'is-invalid': (form['calleNombreComercio'].touched || submitted)
+          && form['calleNombreComercio'].errors}"/>
+          <div class="text-danger" *ngIf="(form['calleNombreComercio'].touched || submitted) && form['calleNombreComercio'].errors?.['required']">
             Dato requerido.
           </div>
 
-          <div class="text-danger" *ngIf="formPedido.controls['calleNombreComercio'].errors?.['minlength'] || formPedido.controls['calleNombreComercio'].errors?.['maxlength'] ">
+          <div class="text-danger" *ngIf="form['calleNombreComercio'].errors?.['minlength'] || form['calleNombreComercio'].errors?.['maxlength'] ">
             Dato texto, 3 a 50 caracteres.
           </div>
         </div>
@@ -60,13 +71,13 @@
         </label>
 
         <div class="col-sm-3">
-          <input id="calleNumeroComercio" type="text" name="calleNumeroComercio" class="form-control" formControlName="calleNumeroComercio" [ngClass]="{'is-invalid': (formPedido.controls['calleNumeroComercio'].touched || submitted)
-          && formPedido.controls['calleNumeroComercio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['calleNumeroComercio'].touched || submitted) && formPedido.controls['calleNumeroComercio'].errors?.['required']">
+          <input id="calleNumeroComercio" type="text" name="calleNumeroComercio" class="form-control" formControlName="calleNumeroComercio" [ngClass]="{'is-invalid': (form['calleNumeroComercio'].touched || submitted)
+          && form['calleNumeroComercio'].errors}"/>
+          <div class="text-danger" *ngIf="(form['calleNumeroComercio'].touched || submitted) && form['calleNumeroComercio'].errors?.['required']">
             Dato requerido.
           </div>
 
-          <div class="text-danger" *ngIf="formPedido.controls['calleNumeroComercio'].errors?.['pattern']">
+          <div class="text-danger" *ngIf="form['calleNumeroComercio'].errors?.['pattern']">
             Dato numérico, 1 a 5 dígitos.
           </div>
         </div>
@@ -79,15 +90,15 @@
         </label>
 
         <div class="col-sm-6">
-          <select id="ciudadComercio" name="ciudadComercio" class="form-select" formControlName="ciudadComercio" [ngClass]="{'is-invalid': (formPedido.controls['ciudadComercio'].touched || submitted)
-          && formPedido.controls['ciudadComercio'].errors}">
+          <select id="ciudadComercio" name="ciudadComercio" class="form-select" formControlName="ciudadComercio" [ngClass]="{'is-invalid': (form['ciudadComercio'].touched || submitted)
+          && form['ciudadComercio'].errors}">
             <option value="null" selected>Seleccione una ciudad...</option>
             <option value="Cor">Córdoba</option>
             <option value="Sf">San Francisco</option>
             <option value="Vgb">Villa General Belgrano</option>
           </select>
 
-          <div class="text-danger" *ngIf="(formPedido.controls['ciudadComercio'].touched || submitted) && formPedido.controls['ciudadComercio'].errors?.['required']">
+          <div class="text-danger" *ngIf="(form['ciudadComercio'].touched || submitted) && form['ciudadComercio'].errors?.['required']">
             Dato requerido.
           </div>
         </div>
@@ -103,8 +114,8 @@
         </div>
 
         <div class="text-danger" *ngIf="
-        formPedido.controls['referenciaComercio'].errors?.['minlength'] ||
-        formPedido.controls['referenciaComercio'].errors?.['maxlength'] ">
+        form['referenciaComercio'].errors?.['minlength'] ||
+        form['referenciaComercio'].errors?.['maxlength'] ">
           Dato texto, 3 a 50 caracteres.
         </div>
       </div>
@@ -121,12 +132,12 @@
 
         <div class="col-sm-3">
           <input id="calleNombreDomicilio" type="text" name="calleNombreDomicilio" class="form-control" formControlName="calleNombreDomicilio" [ngClass]="{
-          'is-invalid': (formPedido.controls['calleNombreDomicilio'].touched || submitted) && formPedido.controls['calleNombreDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['calleNombreDomicilio'].touched || submitted) && formPedido.controls['calleNombreDomicilio'].errors?.['required']">
+          'is-invalid': (form['calleNombreDomicilio'].touched || submitted) && form['calleNombreDomicilio'].errors}"/>
+          <div class="text-danger" *ngIf="(form['calleNombreDomicilio'].touched || submitted) && form['calleNombreDomicilio'].errors?.['required']">
             Dato requerido.
           </div>
 
-          <div class="text-danger" *ngIf="formPedido.controls['calleNombreDomicilio'].errors?.['minlength'] ||formPedido.controls['calleNombreDomicilio'].errors?.['maxlength'] ">
+          <div class="text-danger" *ngIf="form['calleNombreDomicilio'].errors?.['minlength'] ||form['calleNombreDomicilio'].errors?.['maxlength'] ">
             Dato texto, 3 a 50 caracteres.
           </div>
         </div>
@@ -137,12 +148,12 @@
 
         <div class="col-sm-3">
           <input id="calleNumeroDomicilio" type="text" name="calleNumeroDomicilio" class="form-control" formControlName="calleNumeroDomicilio" [ngClass]="{
-          'is-invalid': (formPedido.controls['calleNumeroDomicilio'].touched || submitted) && formPedido.controls['calleNumeroDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['calleNumeroDomicilio'].touched || submitted) && formPedido.controls['calleNumeroDomicilio'].errors?.['required']">
+          'is-invalid': (form['calleNumeroDomicilio'].touched || submitted) && form['calleNumeroDomicilio'].errors}"/>
+          <div class="text-danger" *ngIf="(form['calleNumeroDomicilio'].touched || submitted) && form['calleNumeroDomicilio'].errors?.['required']">
             Dato requerido.
           </div>
 
-          <div class="text-danger" *ngIf="formPedido.controls['calleNumeroDomicilio'].errors?.['pattern']">
+          <div class="text-danger" *ngIf="form['calleNumeroDomicilio'].errors?.['pattern']">
             Dato numérico, 1 a 5 dígitos.
           </div>
         </div>
@@ -161,12 +172,12 @@
 
         <div class="col-sm-3">
           <input id="pisoDepartamento" type="text" name="pisoDepartamento" class="form-control" formControlName="pisoDepartamento" [ngClass]="{
-          'is-invalid': (formPedido.controls['pisoDomicilio'].touched || submitted) && formPedido.controls['pisoDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['pisoDomicilio'].touched || submitted) && formPedido.controls['pisoDomicilio'].errors?.['required']">
+          'is-invalid': (form['pisoDomicilio'].touched || submitted) && form['pisoDomicilio'].errors}"/>
+          <div class="text-danger" *ngIf="(form['pisoDomicilio'].touched || submitted) && form['pisoDomicilio'].errors?.['required']">
             Dato requerido.
           </div>
 
-          <div class="text-danger" *ngIf="formPedido.controls['pisoDomicilio'].errors?.['pattern']">
+          <div class="text-danger" *ngIf="form['pisoDomicilio'].errors?.['pattern']">
             Dato texto, 1 a 2 caracteres.
           </div>
         </div>
@@ -177,12 +188,12 @@
 
         <div class="col-sm-3">
           <input id="letraDepartamento" type="text" name="letraDepartamento" class="form-control" formControlName="letraDepartamento" [ngClass]="{
-          'is-invalid': (formPedido.controls['deptoDomicilio'].touched || submitted) && formPedido.controls['deptoDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(formPedido.controls['deptoDomicilio'].touched || submitted) && formPedido.controls['deptoDomicilio'].errors?.['required']">
+          'is-invalid': (form['deptoDomicilio'].touched || submitted) && form['deptoDomicilio'].errors}"/>
+          <div class="text-danger" *ngIf="(form['deptoDomicilio'].touched || submitted) && form['deptoDomicilio'].errors?.['required']">
             Dato requerido.
           </div>
 
-          <div class="text-danger" *ngIf="formPedido.controls['deptoDomicilio'].errors?.['pattern']">
+          <div class="text-danger" *ngIf="form['deptoDomicilio'].errors?.['pattern']">
             Dato alfabético, 1 dígito.
           </div>
         </div>
@@ -195,14 +206,14 @@
         </label>
 
         <div class="col-sm-6">
-          <select id="ciudadDomicilio" name="ciudadDomicilio" class="form-select" formControlName="ciudadDomicilio" [ngClass]="{'is-invalid': (formPedido.controls['ciudadDomicilio'].touched || submitted)
-          && formPedido.controls['ciudadDomicilio'].errors}">
+          <select id="ciudadDomicilio" name="ciudadDomicilio" class="form-select" formControlName="ciudadDomicilio" [ngClass]="{'is-invalid': (form['ciudadDomicilio'].touched || submitted)
+          && form['ciudadDomicilio'].errors}">
             <option value="null" selected>Seleccione una ciudad...</option>
             <option value="Cor">Córdoba</option>
             <option value="Sf">San Francisco</option>
             <option value="Vgb">Villa General Belgrano</option>
           </select>
-          <div class="text-danger" *ngIf="(formPedido.controls['ciudadDomicilio'].touched || submitted) && formPedido.controls['ciudadDomicilio'].errors?.['required']">
+          <div class="text-danger" *ngIf="(form['ciudadDomicilio'].touched || submitted) && form['ciudadDomicilio'].errors?.['required']">
             Dato requerido.
           </div>
         </div>
@@ -218,8 +229,8 @@
         </div>
 
         <div class="text-danger" *ngIf="
-        formPedido.controls['referenciaDomicilio'].errors?.['minlength'] ||
-        formPedido.controls['referenciaDomicilio'].errors?.['maxlength'] ">
+        form['referenciaDomicilio'].errors?.['minlength'] ||
+        form['referenciaDomicilio'].errors?.['maxlength'] ">
           Dato texto, 3 a 50 caracteres.
         </div>
       </div>
@@ -237,13 +248,13 @@
         </label>
 
         <div class="col-sm-3">
-          <select [value]="" id="momentoEntrega" name="momentoEntrega"  #momentoDeEntrega class="form-select" formControlName="momentoEntrega" [ngClass]="{'is-invalid': (formPedido.controls['momentoEntrega'].touched || submitted)
-            && formPedido.controls['momentoEntrega'].errors}">
+          <select [value]="" id="momentoEntrega" name="momentoEntrega"  #momentoDeEntrega class="form-select" formControlName="momentoEntrega" [ngClass]="{'is-invalid': (form['momentoEntrega'].touched || submitted)
+            && form['momentoEntrega'].errors}">
             <option value="null" selected>Seleccione el momento de entrega...</option>
             <option value="Pa">Programar ahora</option>
             <option value="Lap">Lo antes posible</option>
           </select>
-          <div class="text-danger" *ngIf="(formPedido.controls['momentoEntrega'].touched || submitted) && formPedido.controls['momentoEntrega'].errors?.['required']">
+          <div class="text-danger" *ngIf="(form['momentoEntrega'].touched || submitted) && form['momentoEntrega'].errors?.['required']">
             Dato requerido.
           </div>
         </div>
@@ -282,24 +293,24 @@
         </label>
 
         <div class="col-sm-2">
-          <input id="totalPagar" type="text" name="totalPagar" class="form-control" formControlName="totalPagar" readonly="readonly" value="$100"/>
+          <input id="totalPagar" type="text" name="totalPagar" class="form-control" readonly="readonly" value="$100"/>
         </div>
       </div>
 
       <!--campos Forma de pago-->
       <div class="row form-group my-3">
-        <label class="col-form-label col-sm-2" for="FormaDePago">
+        <label class="col-form-label col-sm-2" for="formaPago">
           Forma de pago <span class="text-danger">*</span>
         </label>
 
         <div class="col-sm-6">
-          <select id="FormaDePago" name="FormaDePago" #FormaDePago class="form-select" formControlName="FormaDePago" [ngClass]="{'is-invalid': (formPedido.controls['formaPago'].touched || submitted)
-            && formPedido.controls['formaPago'].errors}">
+          <select id="formaPago" name="formaPago" #FormaDePago class="form-select" formControlName="formaPago" [ngClass]="{'is-invalid': (form['formaPago'].touched || submitted)
+            && form['formaPago'].errors}">
             <option value="null" selected>Seleccione una forma de pago...</option>
             <option value="Tc">Tarjeta de Crédito MasterCard</option>
             <option value="Efec">Efectivo</option>
           </select>
-          <div class="text-danger" *ngIf="(formPedido.controls['formaPago'].touched || submitted) && formPedido.controls['formaPago'].errors?.['required']">
+          <div class="text-danger" *ngIf="(form['formaPago'].touched || submitted) && form['formaPago'].errors?.['required']">
             Dato requerido.
           </div>
         </div>

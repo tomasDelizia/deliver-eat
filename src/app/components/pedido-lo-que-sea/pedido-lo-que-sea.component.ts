@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-pedido-lo-que-sea',
@@ -9,13 +8,13 @@ import {Observable} from "rxjs";
 })
 export class PedidoLoQueSeaComponent implements OnInit {
   titulo: string = 'Realizar un pedido de lo que sea';
+  urlImagen: string;
 
   esDepto: boolean = false;
   subioImagen: boolean = false;
 
   imagen: any;
 
-  // @ts-ignore
   formPedido: FormGroup;
 
   submitted: boolean = false;
@@ -29,10 +28,15 @@ export class PedidoLoQueSeaComponent implements OnInit {
   ngOnInit() {
   }
 
+  get form() {
+    return this.formPedido.controls;
+  }
+
   private buildForm(): void {
     this.formPedido = this.formBuilder.group({
       descripcionPedido: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
-      imagen: [null,[]],
+      imagen: [null, Validators.required],
+      origenImagen: [null, Validators.required],
       calleNombreComercio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroComercio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
       ciudadComercio: [null, [Validators.required]],
@@ -53,6 +57,34 @@ export class PedidoLoQueSeaComponent implements OnInit {
       fechaVencimientoTarjeta: [null, [Validators.pattern('(1[012][-/]2022)|((0[1-9]|1[012])[-/]20(2[3-9]{1}|[3-9]{2}))')]],
       codigoSeguridadTarjeta: [ null, [Validators.pattern('[0-9]{3}')]]
     });
+  }
+
+  onImagenChange(evento: any): void {
+    this.formPedido.patchValue({ imagen: null });
+    this.urlImagen = '';
+
+    const extensionesPermitidas = ['jpg'];
+    const limiteTamano = 5_000_000; // Tamaño máximo de 5MB.
+
+    if (evento.target.files.length === 0) return;
+
+    const imagenASubir = evento.target.files[0];
+
+    const tamanoImagen = imagenASubir.size;
+    const nombreImagen = imagenASubir.name;
+    const extension = nombreImagen.split(".").pop();
+
+    if(!extensionesPermitidas.includes(extension)) {
+      alert("El tipo de imagen no es el permitido. Por favor, suba una imagen con extensión jpg");
+    } else if (tamanoImagen > limiteTamano) {
+      alert("El tamaño de la imagen es demasiado grande. Por favor, suba un archivo menor a 5MB.");
+    } else {
+      this.formPedido.patchValue({ imagen: imagenASubir });
+      // Vista previa de imagen.
+      const reader: FileReader = new FileReader();
+      reader.onload = () => this.urlImagen = reader.result as string;
+      reader.readAsDataURL(imagenASubir);
+    }
   }
 
   agregar() {
@@ -78,51 +110,5 @@ export class PedidoLoQueSeaComponent implements OnInit {
         arrFecha[1] - 1,
         arrFecha[0]
       ).toISOString();
-  }
-
-  // Traer la imagen
-  validarArchivo(evento: any): void {
-    const extensionesPermitidas = ['jpg', 'JPG'];
-    const limiteTamano = 5_000_000;
-
-    const archivo = evento.target.files[0];
-
-    const tamanoImagen = archivo.size;
-    const nombreArchivo = archivo.name;
-    const extensionArchivo = nombreArchivo.split(".").pop();
-
-    if(!extensionesPermitidas.includes(extensionArchivo)) {
-      alert("El tipo de imagen no es el permitido. Por favor, suba una imagen con extensión .jpg o .JPG");
-      return;
-    } else if (tamanoImagen > limiteTamano) {
-      alert("El tamaño de la imagen es demasiado grande. Por favor, suba un archivo menor a 5MB.");
-      return;
-    } else {
-      this.subioImagen = true;
-      this.convertToBase64(archivo);
-    }
-  }
-
-  // Convierte un archivo binario en un texto en base 64.
-  convertToBase64(archivo: File) {
-    const observable = new Observable((subscriber : any) => {
-      this.readFile(archivo,subscriber);
-    });
-    observable.subscribe((imagen) => {
-      this.imagen = imagen;
-    });
-  }
-
-  readFile(archivo: File, subscriber: any) {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(archivo);
-
-    fileReader.onload = () => {
-      subscriber.next(fileReader.result);
-      subscriber.complete();
-    };
-    fileReader.onerror = (error) => {
-      subscriber.error(error)
-    }
   }
 }
