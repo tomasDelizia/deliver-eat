@@ -27,18 +27,25 @@ export class PedidoLoQueSeaComponent implements OnInit {
     return this.formPedido.controls;
   }
 
+  get momentoEntrega() {
+    return this.form['momentoEntrega'].value;
+  }
+
+  get formaPago() {
+    return this.form['formaPago'].value;
+  }
+
   private buildForm(): void {
     this.formPedido = this.formBuilder.group({
       descripcionPedido: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
       imagen: [null],
-      origenImagen: [null, Validators.required],
       calleNombreComercio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroComercio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
       ciudadComercio: [null, [Validators.required]],
       referenciaComercio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       calleNombreDomicilio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroDomicilio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
-      pisoDepto: [null, [Validators.required, Validators.pattern("[0-9]{1,2}")]],
+      pisoDepto: [null, [Validators.pattern("[0-9]{1,2}")]],
       letraDepto: [null, Validators.pattern("[A-Z]{1}")],
       ciudadDomicilio: [null ,Validators.required],
       referenciaDomicilio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
@@ -87,14 +94,14 @@ export class PedidoLoQueSeaComponent implements OnInit {
   }
 
   agregar() {
-    this.formPedido.reset({ ciudadDomicilio: 'Córdoba' });
+    this.formPedido.reset();
 
     // Reseteamos bandera y estado del formulario.
     this.submitted = false;
     this.formPedido.markAsUntouched();
   }
 
-  grabar() {
+  confirmarPedido() {
     this.submitted = true;
     if (this.formPedido.invalid) return;
 
