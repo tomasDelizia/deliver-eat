@@ -110,7 +110,7 @@
         </label>
 
         <div class="col-sm-3">
-          <input id="referenciaComercio" type="text" name="referenciaComercio" class="form-control"/>
+          <input id="referenciaComercio" type="text" formControlName="referenciaComercio" class="form-control"/>
         </div>
 
         <div class="text-danger" *ngIf="
@@ -160,40 +160,38 @@
       </div>
 
       <div class="row form-group my-3">
-        <label><input type="checkbox" id="esDepto" #EsDepto value="first_checkbox"> Es un departamento</label>
+        <label>
+          <input type="checkbox" id="esDepto" (change)="onEsDeptoChange()">
+          Es un departamento
+        </label>
       </div>
 
-      <!--MOSTRAR SOLO SI EL CHECKBOX ESTA MARCADO--> <!--Este *ngIf no funciona-->
-
-      <div class="row form-group my-3"  *ngIf="EsDepto.checked">
-        <label class="col-form-label col-sm-1" for="pisoDepartamento">
+      <div class="row form-group my-3" *ngIf="esDepto">
+        <label class="col-form-label col-sm-1" for="pisoDepto">
           Piso <span class="text-danger">*</span>
         </label>
 
         <div class="col-sm-3">
-          <input id="pisoDepartamento" type="text" name="pisoDepartamento" class="form-control" formControlName="pisoDepartamento" [ngClass]="{
-          'is-invalid': (form['pisoDomicilio'].touched || submitted) && form['pisoDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(form['pisoDomicilio'].touched || submitted) && form['pisoDomicilio'].errors?.['required']">
+          <input id="pisoDepto" type="text" name="pisoDepto" class="form-control" formControlName="pisoDepto" [ngClass]="{
+          'is-invalid': (form['pisoDepto'].touched || submitted) && form['pisoDepto'].errors}"/>
+          <div class="text-danger" *ngIf="(form['pisoDepto'].touched || submitted) && form['pisoDepto'].errors?.['required']">
             Dato requerido.
           </div>
 
-          <div class="text-danger" *ngIf="form['pisoDomicilio'].errors?.['pattern']">
+          <div class="text-danger" *ngIf="form['pisoDepto'].errors?.['pattern']">
             Dato texto, 1 a 2 caracteres.
           </div>
         </div>
 
-        <label class="col-form-label col-sm-auto" for="letraDepartamento">
-          Letra <span class="text-danger">*</span>
+        <label class="col-form-label col-sm-auto" for="letraDepto">
+          Letra
         </label>
 
         <div class="col-sm-3">
-          <input id="letraDepartamento" type="text" name="letraDepartamento" class="form-control" formControlName="letraDepartamento" [ngClass]="{
-          'is-invalid': (form['deptoDomicilio'].touched || submitted) && form['deptoDomicilio'].errors}"/>
-          <div class="text-danger" *ngIf="(form['deptoDomicilio'].touched || submitted) && form['deptoDomicilio'].errors?.['required']">
-            Dato requerido.
-          </div>
+          <input id="letraDepto" type="text" name="letraDepto" class="form-control" formControlName="letraDepto" [ngClass]="{
+          'is-invalid': (form['letraDepto'].touched || submitted) && form['letraDepto'].errors}"/>
 
-          <div class="text-danger" *ngIf="form['deptoDomicilio'].errors?.['pattern']">
+          <div class="text-danger" *ngIf="form['letraDepto'].errors?.['pattern']">
             Dato alfabético, 1 dígito.
           </div>
         </div>
@@ -225,7 +223,7 @@
         </label>
 
         <div class="col-sm-3">
-          <input id="referenciaDomicilio" type="text" name="referenciaDomicilio" class="form-control"/>
+          <input id="referenciaDomicilio" type="text" formControlName="referenciaDomicilio" class="form-control"/>
         </div>
 
         <div class="text-danger" *ngIf="

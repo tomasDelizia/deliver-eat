@@ -8,25 +8,20 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 })
 export class PedidoLoQueSeaComponent implements OnInit {
   titulo: string = 'Realizar un pedido de lo que sea';
+
   urlImagen: string;
 
   esDepto: boolean = false;
-  subioImagen: boolean = false;
-
-  imagen: any;
 
   formPedido: FormGroup;
 
   submitted: boolean = false;
 
-  constructor(
-    private formBuilder: FormBuilder,
-  ) {
+  constructor(private formBuilder: FormBuilder) {
     this.buildForm();
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   get form() {
     return this.formPedido.controls;
@@ -43,8 +38,8 @@ export class PedidoLoQueSeaComponent implements OnInit {
       referenciaComercio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       calleNombreDomicilio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroDomicilio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
-      pisoDomicilio: [null, Validators.pattern("[0-9]{1,2}")],
-      deptoDomicilio: [null, Validators.pattern("[A-Z]{1}")],
+      pisoDepto: [null, [Validators.required, Validators.pattern("[0-9]{1,2}")]],
+      letraDepto: [null, Validators.pattern("[A-Z]{1}")],
       ciudadDomicilio: [null ,Validators.required],
       referenciaDomicilio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       momentoEntrega: [null, Validators.required],
@@ -64,7 +59,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
     this.urlImagen = '';
 
     const extensionesPermitidas = ['jpg'];
-    const limiteTamano = 5_000_000; // Tamaño máximo de 5MB.
+    const tamanoMaximo = 5_000_000; // Tamaño máximo de 5MB.
 
     if (evento.target.files.length === 0) return;
 
@@ -76,7 +71,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
     if(!extensionesPermitidas.includes(extension)) {
       alert("El tipo de imagen no es el permitido. Por favor, suba una imagen con extensión jpg");
-    } else if (tamanoImagen > limiteTamano) {
+    } else if (tamanoImagen > tamanoMaximo) {
       alert("El tamaño de la imagen es demasiado grande. Por favor, suba un archivo menor a 5MB.");
     } else {
       this.formPedido.patchValue({ imagen: imagenASubir });
@@ -85,6 +80,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
       reader.onload = () => this.urlImagen = reader.result as string;
       reader.readAsDataURL(imagenASubir);
     }
+  }
+
+  onEsDeptoChange() {
+    this.esDepto = !this.esDepto;
   }
 
   agregar() {
