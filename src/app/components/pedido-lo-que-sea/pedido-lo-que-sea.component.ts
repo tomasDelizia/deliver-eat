@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {conditionalValidator} from "../../shared/validators/conditional.validator";
-import {DateTimeValidator} from "../../shared/validators/date.time.validator";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { conditionalValidator } from "../../shared/validators/conditional.validator";
+import { DateTimeValidator } from "../../shared/validators/date.time.validator";
+import {Ciudad, ciudades} from "../../models/ciudad";
 
 @Component({
   selector: 'app-pedido-lo-que-sea',
@@ -17,10 +18,26 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   submitted: boolean = false;
 
+  posicion: google.maps.LatLngLiteral = { lat: -31.4290879, lng: -64.18715 }
+
+  zoom: number = 15;
+
+  posicionMarcador: google.maps.LatLngLiteral;
+
+  opcionesMarcador: google.maps.MarkerOptions = { draggable: false };
+
+  ciudades: Ciudad[] = ciudades;
+
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
     this.buildForm();
+
+    this.form['ciudadComercio'].valueChanges
+      .subscribe((valor) => {
+        let ciudad: Ciudad = this.ciudades.find(c => c.id === valor) as Ciudad;
+        this.posicion = ciudad.posicion;
+      })
 
     this.form['checkboxEsDepartamento'].valueChanges
       .subscribe(() => {
@@ -58,6 +75,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   get checkboxEsDepartamento() {
     return this.form['checkboxEsDepartamento'].value;
+  }
+
+  get ciudadComercio() {
+    return this.form['ciudadComercio'].value;
   }
 
   private buildForm(): void {
@@ -163,5 +184,9 @@ export class PedidoLoQueSeaComponent implements OnInit {
         arrFecha[1] - 1,
         arrFecha[0]
       ).toISOString();
+  }
+
+  agregarMarcador(evento: google.maps.MapMouseEvent) {
+    if (evento.latLng != null) this.posicionMarcador = evento.latLng.toJSON();
   }
 }

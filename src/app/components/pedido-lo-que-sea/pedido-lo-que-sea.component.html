@@ -91,16 +91,26 @@
         <div class="col-sm-6">
           <select id="ciudadComercio" name="ciudadComercio" class="form-select" formControlName="ciudadComercio" [ngClass]="{'is-invalid': (form['ciudadComercio'].touched || submitted)
           && form['ciudadComercio'].errors}">
-            <option value="null" selected>Seleccione una ciudad...</option>
-            <option value="Cor">Córdoba</option>
-            <option value="Sf">San Francisco</option>
-            <option value="Vgb">Villa General Belgrano</option>
+            <option [ngValue]=null selected>Seleccione una ciudad...</option>
+            <option [ngValue]=1>Córdoba</option>
+            <option [ngValue]=2>San Francisco</option>
+            <option [ngValue]=3>Villa General Belgrano</option>
           </select>
 
           <div class="text-danger" *ngIf="(form['ciudadComercio'].touched || submitted) && form['ciudadComercio'].errors?.['required']">
             Dato requerido.
           </div>
         </div>
+      </div>
+
+      <!--Mapa interactivo-->
+      <div class="row form-group my-3">
+        <google-map height="400px" width="750px" [center]="posicion" [zoom]="zoom" (mapClick)="agregarMarcador($event)">
+          <map-marker
+            [position]="posicionMarcador"
+            [options]="opcionesMarcador">
+          </map-marker>
+        </google-map>
       </div>
 
       <div class="row form-group my-3">
@@ -211,10 +221,10 @@
         <div class="col-sm-6">
           <select id="ciudadDomicilio" name="ciudadDomicilio" class="form-select" formControlName="ciudadDomicilio" [ngClass]="{'is-invalid': (form['ciudadDomicilio'].touched || submitted)
           && form['ciudadDomicilio'].errors}">
-            <option value="null" selected>Seleccione una ciudad...</option>
-            <option value="Cor">Córdoba</option>
-            <option value="Sf">San Francisco</option>
-            <option value="Vgb">Villa General Belgrano</option>
+            <option [ngValue]="null" selected>Seleccione una ciudad...</option>
+            <option [ngValue]="1">Córdoba</option>
+            <option [ngValue]="2">San Francisco</option>
+            <option [ngValue]="3">Villa General Belgrano</option>
           </select>
           <div class="text-danger" *ngIf="(form['ciudadDomicilio'].touched || submitted) && form['ciudadDomicilio'].errors?.['required']">
             Dato requerido.
