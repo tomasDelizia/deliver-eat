@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { conditionalValidator } from "../../shared/validators/conditional.validator";
-import { DateTimeValidator } from "../../shared/validators/date.time.validator";
-import { Ciudad, ciudades } from "../../models/ciudad";
-import {DireccionEntrega, direccionesEntrega} from "../../models/direccion.entrega";
+import { ConditionalValidator } from "../shared/validators/conditional.validator";
+import { DateTimeValidator } from "../shared/validators/date.time.validator";
+import { Ciudad, ciudades } from "./shared/models/ciudad.model";
+import { DireccionEntrega, direccionesEntrega } from "./shared/models/direccion-entrega.model";
 import * as moment from "moment/moment";
 
 @Component({
@@ -67,27 +67,27 @@ export class PedidoLoQueSeaComponent implements OnInit {
       });
   }
 
-  get form() {
+  get form()  {
     return this.formPedido.controls;
   }
 
-  get momentoEntrega() {
+  get momentoEntrega(): string {
     return this.form['momentoEntrega'].value;
   }
 
-  get formaPago() {
+  get formaPago(): string {
     return this.form['formaPago'].value;
   }
 
-  get checkboxEsDepartamento() {
+  get checkboxEsDepartamento(): boolean {
     return this.form['checkboxEsDepartamento'].value;
   }
 
-  get ciudadComercio() {
+  get ciudadComercio(): number {
     return this.form['ciudadComercio'].value;
   }
 
-  get ciudadDomicilio() {
+  get ciudadDomicilio(): number {
     return this.form['ciudadDomicilio'].value;
   }
 
@@ -104,34 +104,34 @@ export class PedidoLoQueSeaComponent implements OnInit {
       checkboxEsDepartamento: [null],
       pisoDepto: [null, [
         Validators.pattern("[0-9]{1,2}"),
-        conditionalValidator(() => this.checkboxEsDepartamento, Validators.required)]],
+        ConditionalValidator.conditionalValidator(() => this.checkboxEsDepartamento, Validators.required)]],
       letraDepto: [null, [
         Validators.pattern("[A-Z]{1}"),
-        conditionalValidator(() => this.checkboxEsDepartamento, Validators.required)]],
+        ConditionalValidator.conditionalValidator(() => this.checkboxEsDepartamento, Validators.required)]],
       ciudadDomicilio: [null ,Validators.required],
       referenciaDomicilio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       momentoEntrega: [null, Validators.required],
       fechaEntrega: [null, [
         DateTimeValidator.moreThanToday,
-        conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)]],
-      horaEntrega: [null, conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)],
+        ConditionalValidator.conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)]],
+      horaEntrega: [null, ConditionalValidator.conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)],
       formaPago: [null, Validators.required],
       montoAAbonar: [null, [
         Validators.max(999999),
-        conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]],
+        ConditionalValidator.conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]],
       nroTarjeta: [null, [
         Validators.pattern("5[0-5]{1}[0-9]{14}"),
-        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
+        ConditionalValidator.conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
       titularTarjeta: [null, [
         Validators.minLength(4),
         Validators.maxLength(50),
-        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
+        ConditionalValidator.conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
       fechaVencimientoTarjeta: [null, [
         Validators.pattern('(1[012][-/]2022)|((0[1-9]|1[012])[-/]20(2[3-9]{1}|[3-9]{2}))'),
-        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
+        ConditionalValidator.conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]],
       codigoSeguridadTarjeta: [ null, [
         Validators.pattern('[0-9]{3}'),
-        conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]]
+        ConditionalValidator.conditionalValidator(() => this.formaPago === 'tarjeta', Validators.required)]]
     });
   }
 
@@ -174,7 +174,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
     return true;
   }
 
-  confirmarPedido() {
+  confirmarPedido(): void {
     this.submitted = true;
     if (this.formPedido.invalid) return;
     alert('Su pedido fue realizado con éxito.');
@@ -187,7 +187,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
     this.urlImagen = '';
   }
 
-  agregarMarcador(evento: google.maps.MapMouseEvent) {
+  agregarMarcador(evento: google.maps.MapMouseEvent): void {
     if (evento.latLng != null) this.posicionMarcador = evento.latLng.toJSON();
 
     let indice: number = Math.floor(Math.random() * 5);
@@ -221,7 +221,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
     this.form['montoAAbonar'].setValidators([
       Validators.min(this.totalAPagar),
       Validators.max(999999),
-      conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]);
+      ConditionalValidator.conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]);
 
     return this.totalAPagar;
   }

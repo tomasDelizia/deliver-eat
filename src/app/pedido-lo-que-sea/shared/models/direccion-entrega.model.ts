@@ -1,4 +1,4 @@
-import {Ciudad, ciudades} from "./ciudad";
+import {Ciudad, ciudades} from "./ciudad.model";
 
 export interface DireccionEntrega {
   calleNombre: string;

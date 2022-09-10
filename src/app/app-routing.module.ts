@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {PedidoLoQueSeaComponent} from "./components/pedido-lo-que-sea/pedido-lo-que-sea.component";
+import {PedidoLoQueSeaComponent} from "./pedido-lo-que-sea/pedido-lo-que-sea.component";
 
 const routes: Routes = [
   { path: 'pedido-lo-que-sea', component: PedidoLoQueSeaComponent },
