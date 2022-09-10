@@ -8,6 +8,15 @@ form button {
   margin: 1em;
 }
 
+h2, label, legend, b{
+  color: white;
+}
+
+hr{
+  border: 2px solid white;
+  border-radius: 10px;
+}
+
 .green-yellow-crayola {
   background-color: #F9EA9A;
 }
