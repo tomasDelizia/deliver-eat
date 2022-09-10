@@ -9,7 +9,7 @@
       <fieldset>
         <b><legend class="display-6">Detalle del pedido</legend></b>
 
-        <!--campo Descripción-->
+        <!--Campo Descripción-->
         <div class="form-group row my-3">
           <label class="col-form-label col-sm-auto" for="descripcionPedido">
             ¿Qué necesitás? <span class="text-danger">*</span>
@@ -30,16 +30,16 @@
           </div>
         </div>
 
-        <!--campo Imagen-->
+        <!--Campo Imagen-->
         <div class="row form-group my-3">
-          <!-- Subir imagen-->
+          <!--Subir imagen-->
           <label class="col-form-label col-sm-auto">
             Foto de lo que necesita (opcional)
           </label>
           <label for="imagen" class="btn btn-dark col-sm-2">Subir imagen</label>
           <input id="imagen" style="visibility:hidden;" type="file" multiple accept=".jpg" (change)="onImagenChange($event)">
 
-          <!-- Vista previa de imagen -->
+          <!--Vista previa de imagen-->
           <div *ngIf="urlImagen && urlImagen !== ''">
             <img [src]="urlImagen" [alt]="" class="img-thumbnail" width="200px">
           </div>
@@ -48,7 +48,7 @@
 
       <fieldset>
         <legend class="display-6">Dirección comercio</legend>
-        <!--campos Calle nombre y altura de comercio-->
+        <!--Campos Calle nombre y altura de comercio-->
         <div class="row form-group my-3">
           <label class="col-form-label col-sm-1" for="calleNombreComercio">
             Calle <span class="text-danger">*</span>
@@ -84,7 +84,7 @@
           </div>
         </div>
 
-        <!--campos CiudadModel comercio-->
+        <!--Campos Ciudad comercio-->
         <div class="row form-group my-3">
           <label class="col-form-label col-sm-1" for="ciudadComercio">
             CiudadModel <span class="text-danger">*</span>
@@ -135,7 +135,7 @@
 
       <fieldset>
         <legend class="display-6">Dirección entrega</legend>
-        <!--campos Calle nombre y altura de domicilio-->
+        <!--Campos Calle nombre y altura de domicilio-->
         <div class="row form-group my-3">
           <label class="col-form-label col-sm-1" for="calleNombreDomicilio">
             Calle <span class="text-danger">*</span>
@@ -214,7 +214,7 @@
           </div>
         </div>
 
-        <!--campos CiudadModel domicilio-->
+        <!--Campos Ciudad domicilio-->
         <div class="row form-group my-3">
           <label class="col-form-label col-sm-1" for="ciudadDomicilio">
             CiudadModel <span class="text-danger">*</span>
@@ -252,7 +252,7 @@
 
       </fieldset><hr>
 
-      <!--campos de Entrega-->
+      <!--Campos de Entrega-->
       <fieldset>
 
         <legend class="display-6">Entrega</legend>
@@ -275,7 +275,7 @@
           </div>
         </div>
 
-        <!--campos momento de entrega-->
+        <!--Campos momento de entrega-->
 
         <div class="row form-group my-3" *ngIf="momentoEntrega === 'programar'">
 
@@ -321,7 +321,7 @@
       <hr>
 
       <div *ngIf="completoDirecciones()">
-        <!--campos Total a pagar-->
+        <!--Campos Total a pagar-->
         <div class="row form-group my-3 text-uppercase lead">
           <label class="col-form-label col-auto col-sm-3" for="distanciaPedido">
             Distancia del pedido
@@ -339,7 +339,7 @@
           </div>
         </div>
 
-        <!--campos Forma de pago-->
+        <!--Campos Forma de pago-->
         <div class="row form-group my-3">
           <label class="col-form-label col-sm-2" for="formaPago">
             Forma de pago <span class="text-danger">*</span>
@@ -360,7 +360,7 @@
           </div>
         </div>
 
-        <!--campos Efectivo-->
+        <!--Campos Efectivo-->
         <div class="row form-group my-3" *ngIf="formaPago === 'efectivo'">
 
           <label class="col-form-label col-sm-auto" for="montoAAbonar">
@@ -386,7 +386,7 @@
           </div>
         </div>
 
-        <!--campos de Tarjeta-->
+        <!--Campos de Tarjeta-->
         <div *ngIf="formaPago === 'tarjeta'">
           <div class="row form-group my-3">
 
@@ -481,7 +481,7 @@
       </button>&nbsp;
     </div>
 
-    <!--texto: Revisar los datos ingresados...-->
+    <!--Alerta de Revisar los datos ingresados...-->
     <div id="divMsjFormRegistro" class="row alert alert-danger" *ngIf="formPedido.invalid && submitted">
       <i class="fa fa-exclamation-sign"></i>Revisar los datos ingresados
     </div>

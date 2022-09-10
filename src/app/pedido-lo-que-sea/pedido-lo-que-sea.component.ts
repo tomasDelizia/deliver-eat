@@ -28,8 +28,6 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   opcionesMarcador: google.maps.MarkerOptions = { draggable: false };
 
-  ciudades: Ciudad[] = ciudades;
-
   distancia: number;
 
   totalAPagar: number;
@@ -37,26 +35,31 @@ export class PedidoLoQueSeaComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit() {
+    // Inicializa el formulario.
     this.buildForm();
 
+    // Actualiza la posición del mapa cuando se elija una ciudad para el comercio.
     this.form['ciudadComercio'].valueChanges
       .subscribe((valor) => {
-        let ciudad: Ciudad = this.ciudades.find(c => c.id === valor) as Ciudad;
+        let ciudad: Ciudad = ciudades.find(c => c.id === valor) as Ciudad;
         this.posicion = ciudad.posicion;
       })
 
+    // Actualiza valores y validez de los campos piso y letra de departamento ante un cambio en el checkbox.
     this.form['checkboxEsDepartamento'].valueChanges
       .subscribe(() => {
         this.form['pisoDepto'].updateValueAndValidity();
         this.form['letraDepto'].updateValueAndValidity();
       });
 
+    // Actualiza valores y validez de los campos fecha y hora de entrega ante un cambio en el momento de entrega.
     this.form['momentoEntrega'].valueChanges
       .subscribe(() => {
         this.form['fechaEntrega'].updateValueAndValidity();
         this.form['horaEntrega'].updateValueAndValidity();
       });
 
+    // Actualiza valores y validez de los campos referidos a la forma de pago ante un cambio en esta.
     this.form['formaPago'].valueChanges
       .subscribe(() => {
         this.form['montoAAbonar'].updateValueAndValidity();
@@ -91,6 +94,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
     return this.form['ciudadDomicilio'].value;
   }
 
+  /**
+   * Construye el formulario inicial, con todos sus campos y validaciones requeridas.
+   * @private
+   */
   private buildForm(): void {
     this.formPedido = this.formBuilder.group({
       descripcionPedido: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
@@ -135,6 +142,11 @@ export class PedidoLoQueSeaComponent implements OnInit {
     });
   }
 
+  /**
+   * Realiza validaciones de tipo y tamaño ante una carga de imagen por el usuario. Si se acepta,
+   * se muestra la imagen por pantalla. Si no, se alerta el motivo de su rechazo.
+   * @param evento carga una imagen seleccionada por el usuario de su dispositivo.
+   */
   onImagenChange(evento: any): void {
     this.formPedido.patchValue({ imagen: null });
     this.urlImagen = '';
@@ -150,11 +162,14 @@ export class PedidoLoQueSeaComponent implements OnInit {
     const nombreImagen = imagenASubir.name;
     const extension = nombreImagen.split(".").pop();
 
-    if(!extensionesPermitidas.includes(extension)) {
+    // Pregunta si la imagen no tiene el formato requerido.
+    if(!extensionesPermitidas.includes(extension))
       alert("El tipo de imagen no es el permitido. Por favor, suba una imagen con extensión jpg");
-    } else if (tamanoImagen > tamanoMaximo) {
+    // Pregunta si la imagen supera el tamaño requerido.
+    else if (tamanoImagen > tamanoMaximo)
       alert("El tamaño de la imagen es demasiado grande. Por favor, suba un archivo menor a 5MB.");
-    } else {
+    // Pasa las validaciones y muestra la imagen.
+    else {
       this.formPedido.patchValue({ imagen: imagenASubir });
       // Vista previa de imagen.
       const reader: FileReader = new FileReader();
@@ -163,10 +178,16 @@ export class PedidoLoQueSeaComponent implements OnInit {
     }
   }
 
+  /**
+   * Devuelve falso si la fecha es la actual y la hora anterior a la hora actual y verdadero en otro caso.
+   * @param fecha la fecha seleccionada por el usuario.
+   * @param hora la hora seleccionada por el usuario.
+   */
   esHoraValida(fecha: string, hora: string): boolean {
     let hoy: string = moment().format('YYYY-MM-DD');
     let ahora: string = moment().format('HH:mm');
 
+    // Pregunta si la fecha es actual y la hora anterior a la hora actual.
     if (hoy === fecha && hora < ahora) {
       this.form['horaEntrega'].setErrors( { "horaInvalida": true });
       return false;
@@ -174,6 +195,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
     return true;
   }
 
+  /**
+   * Marca el formulario como enviado, comprueba las validaciones de los campos y, si pasan, alerta el éxito
+   * por pantalla.
+   */
   confirmarPedido(): void {
     this.submitted = true;
     if (this.formPedido.invalid) return;
@@ -187,12 +212,18 @@ export class PedidoLoQueSeaComponent implements OnInit {
     this.urlImagen = '';
   }
 
+  /**
+   * Agrega un marcador al mapa interactivo ante un toque por parte del usuario y autocompleta la dirección.
+   * @param evento toque en una parte del mapa por parte del usuario.
+   */
   agregarMarcador(evento: google.maps.MapMouseEvent): void {
     if (evento.latLng != null) this.posicionMarcador = evento.latLng.toJSON();
 
+    // Obtiene la dirección del comercio de manera aleatoria.
     let indice: number = Math.floor(Math.random() * 5);
     let direccionRnd: DireccionEntrega = direccionesEntrega.filter(d => d.ciudad.id === this.ciudadComercio)[indice];
 
+    // Autocompleta la dirección del comercio en el formulario.
     this.formPedido.patchValue(
       {
         calleNombreComercio: direccionRnd.calleNombre,
@@ -200,11 +231,17 @@ export class PedidoLoQueSeaComponent implements OnInit {
       });
   }
 
+  /**
+   * Devuelve verdadero si el usuario completó todos los campos requeridos para las direcciones y falso en otro caso.
+   */
   completoDirecciones(): boolean {
     return this.form['calleNombreComercio'].valid && this.form['calleNumeroComercio'].valid && this.form['ciudadComercio'].valid
       && this.form['calleNombreDomicilio'].valid && this.form['calleNumeroDomicilio'].valid && this.form['ciudadDomicilio'].valid;
   }
 
+  /**
+   * Calcula la distancia en kilómetros entre la dirección de comercio y la dirección de entrega del pedido.
+   */
   calcularDistancia(): number {
     let ciudadDomicilio: Ciudad = ciudades.find(c => c.id === this.ciudadDomicilio) as Ciudad;
     let posicionMarcador: google.maps.LatLngLiteral = this.posicionMarcador as google.maps.LatLngLiteral;
@@ -214,6 +251,9 @@ export class PedidoLoQueSeaComponent implements OnInit {
     return this.distancia;
   }
 
+  /**
+   * Calcula el monto total a pagar por el usuario según la distancia a recorrer por el cadete.
+   */
   calcularTotal(): number {
     this.totalAPagar = (this.distancia / 0.5) * 250;
     if (this.totalAPagar < 250) this.totalAPagar = 250;
