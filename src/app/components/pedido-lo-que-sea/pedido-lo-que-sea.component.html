@@ -105,8 +105,8 @@
 
       <!--Mapa interactivo-->
       <div class="row form-group my-3" *ngIf="ciudadComercio">
-        <google-map height="400px" width="750px" [center]="posicion" [zoom]="zoom" (mapClick)="agregarMarcador($event)">
-          <map-marker
+        <google-map height="400px" width="100%" [center]="posicion" [zoom]="zoom" (mapClick)="agregarMarcador($event)">
+          <map-marker *ngIf="posicionMarcador"
             [position]="posicionMarcador"
             [options]="opcionesMarcador">
           </map-marker>
@@ -320,15 +320,21 @@
 
     <fieldset>
       <!--campos Total a pagar-->
-      <div class="row form-group my-3 text-uppercase lead">
+      <div class="row form-group my-3 text-uppercase lead" *ngIf="completoDirecciones()">
+        <label class="col-form-label col-auto col-sm-3" for="distanciaPedido">
+          Distancia del pedido
+        </label>
+        <div class="col-form-label col-4 col-sm-2">
+          <b id="distanciaPedido">{{calcularDistancia()}} km</b>
+        </div>
+
         <label class="col-form-label col-auto col-sm-2" for="totalAPagar">
           Total a pagar
         </label>
+
         <div class="col-form-label col-4 col-sm-2">
-          <b id="totalAPagar">$ 100</b>
+          <b id="totalAPagar">$ {{calcularTotal()}}</b>
         </div>
-
-
       </div>
 
       <!--campos Forma de pago-->
