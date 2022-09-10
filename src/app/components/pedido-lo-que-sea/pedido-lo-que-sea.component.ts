@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { conditionalValidator } from "../../shared/validators/conditional.validator";
 import { DateTimeValidator } from "../../shared/validators/date.time.validator";
-import {Ciudad, ciudades} from "../../models/ciudad";
+import { Ciudad, ciudades } from "../../models/ciudad";
+import {DireccionEntrega, direccionesEntrega} from "../../models/direccion.entrega";
+import * as moment from "moment/moment";
 
 @Component({
   selector: 'app-pedido-lo-que-sea',
@@ -22,11 +24,15 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   zoom: number = 15;
 
-  posicionMarcador: google.maps.LatLngLiteral;
+  posicionMarcador: google.maps.LatLngLiteral | null;
 
   opcionesMarcador: google.maps.MarkerOptions = { draggable: false };
 
   ciudades: Ciudad[] = ciudades;
+
+  distancia: number;
+
+  totalAPagar: number;
 
   constructor(private formBuilder: FormBuilder) { }
 
@@ -81,13 +87,17 @@ export class PedidoLoQueSeaComponent implements OnInit {
     return this.form['ciudadComercio'].value;
   }
 
+  get ciudadDomicilio() {
+    return this.form['ciudadDomicilio'].value;
+  }
+
   private buildForm(): void {
     this.formPedido = this.formBuilder.group({
       descripcionPedido: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(30)]],
       imagen: [null],
       calleNombreComercio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroComercio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
-      ciudadComercio: [null, [Validators.required]],
+      ciudadComercio: [1, [Validators.required]],
       referenciaComercio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       calleNombreDomicilio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroDomicilio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
@@ -155,38 +165,54 @@ export class PedidoLoQueSeaComponent implements OnInit {
   }
 
   esHoraValida(fecha: string, hora: string): boolean {
-    let hoy: string = new Date().toISOString().slice(0, 10);
-    let ahora: string = new Date().toTimeString().slice(0, 5);
+    let hoy: string = moment().format('YYYY-MM-DD');
+    let ahora: string = moment().format('HH:mm');
 
     return !(hoy === fecha && hora < ahora);
-  }
-
-  agregar() {
-    this.formPedido.reset();
-
-    // Reseteamos bandera y estado del formulario.
-    this.submitted = false;
-    this.formPedido.markAsUntouched();
   }
 
   confirmarPedido() {
     this.submitted = true;
     if (this.formPedido.invalid) return;
+    alert('Pedido realizado con éxito xd');
 
-    //hacemos una copia de los datos del formulario, para modificar la fecha y luego enviarlo al servidor
-    const itemCopy = { ...this.formPedido.value };
-
-    //convertir fecha de string dd/MM/yyyy a ISO para que la entienda webapi
-    let arrFecha = itemCopy.FechaAlta.substr(0, 10).split("/");
-    if (arrFecha.length == 3)
-      itemCopy.FechaAlta = new Date(
-        arrFecha[2],
-        arrFecha[1] - 1,
-        arrFecha[0]
-      ).toISOString();
+    // Reseteamos bandera y estado del formulario.
+    this.submitted = false;
+    this.formPedido.reset({ ciudadComercio: 1 });
+    this.formPedido.markAsUntouched();
+    this.posicionMarcador = null;
+    this.urlImagen = '';
   }
 
   agregarMarcador(evento: google.maps.MapMouseEvent) {
     if (evento.latLng != null) this.posicionMarcador = evento.latLng.toJSON();
+
+    let indice: number = Math.floor(Math.random() * 5);
+    let direccionRnd: DireccionEntrega = direccionesEntrega.filter(d => d.ciudad.id === this.ciudadComercio)[indice];
+
+    this.formPedido.patchValue(
+      {
+        calleNombreComercio: direccionRnd.calleNombre,
+        calleNumeroComercio: direccionRnd.calleNumero
+      });
+  }
+
+  completoDirecciones(): boolean {
+    return this.form['calleNombreComercio'].valid && this.form['calleNumeroComercio'].valid && this.form['ciudadComercio'].valid
+      && this.form['calleNombreDomicilio'].valid && this.form['calleNumeroDomicilio'].valid && this.form['ciudadDomicilio'].valid;
+  }
+
+  calcularDistancia(): number {
+    let ciudadDomicilio: Ciudad = ciudades.find(c => c.id === this.ciudadDomicilio) as Ciudad;
+    let posicionMarcador: google.maps.LatLngLiteral = this.posicionMarcador as google.maps.LatLngLiteral;
+
+    this.distancia = Number((google.maps.geometry.spherical.computeLength([
+      ciudadDomicilio.posicion, posicionMarcador]) / 1000).toFixed(2));
+    return this.distancia;
+  }
+
+  calcularTotal(): number {
+    this.totalAPagar = (this.distancia / 0.5) * 250;
+    return this.totalAPagar;
   }
 }
