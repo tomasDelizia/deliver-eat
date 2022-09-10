@@ -104,7 +104,7 @@
       </div>
 
       <!--Mapa interactivo-->
-      <div class="row form-group my-3">
+      <div class="row form-group my-3" *ngIf="ciudadComercio">
         <google-map height="400px" width="750px" [center]="posicion" [zoom]="zoom" (mapClick)="agregarMarcador($event)">
           <map-marker
             [position]="posicionMarcador"

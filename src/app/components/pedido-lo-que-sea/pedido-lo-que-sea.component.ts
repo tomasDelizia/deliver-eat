@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { conditionalValidator } from "../../shared/validators/conditional.validator";
 import { DateTimeValidator } from "../../shared/validators/date.time.validator";
-import {Ciudad, ciudades} from "../../models/ciudad";
+import { Ciudad, ciudades } from "../../models/ciudad";
+import {DireccionEntrega, direccionesEntrega} from "../../models/direccion.entrega";
 
 @Component({
   selector: 'app-pedido-lo-que-sea',
@@ -87,7 +88,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
       imagen: [null],
       calleNombreComercio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroComercio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
-      ciudadComercio: [null, [Validators.required]],
+      ciudadComercio: [1, [Validators.required]],
       referenciaComercio: [null, [Validators.minLength(3), Validators.maxLength(50)]],
       calleNombreDomicilio: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       calleNumeroDomicilio: [null, [Validators.required, Validators.pattern("[0-9]{1,5}")]],
@@ -188,5 +189,15 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   agregarMarcador(evento: google.maps.MapMouseEvent) {
     if (evento.latLng != null) this.posicionMarcador = evento.latLng.toJSON();
+
+    let indice: number = Math.floor(Math.random() * 5);
+    let direccionRnd: DireccionEntrega = direccionesEntrega.filter(d => d.ciudad.id === this.ciudadComercio)[indice];
+    console.log(direccionRnd)
+
+    this.formPedido.patchValue(
+      {
+        calleNombreComercio: direccionRnd.calleNombre,
+        calleNumeroComercio: direccionRnd.calleNumero
+      });
   }
 }
