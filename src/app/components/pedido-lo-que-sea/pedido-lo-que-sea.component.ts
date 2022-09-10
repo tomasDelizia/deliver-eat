@@ -65,10 +65,6 @@ export class PedidoLoQueSeaComponent implements OnInit {
         this.form['fechaVencimientoTarjeta'].updateValueAndValidity();
         this.form['codigoSeguridadTarjeta'].updateValueAndValidity();
       });
-    this.form['totalAPagar'].valueChanges
-      .subscribe(() => {
-
-      })
   }
 
   get form() {
@@ -120,7 +116,6 @@ export class PedidoLoQueSeaComponent implements OnInit {
         conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)]],
       horaEntrega: [null, conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)],
       formaPago: [null, Validators.required],
-      totalAPagar: null,
       montoAAbonar: [null, [
         Validators.max(999999),
         conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]],
@@ -182,7 +177,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
   confirmarPedido() {
     this.submitted = true;
     if (this.formPedido.invalid) return;
-    alert('Pedido realizado con éxito xd');
+    alert('Su pedido fue realizado con éxito.');
 
     // Reseteamos bandera y estado del formulario.
     this.submitted = false;
