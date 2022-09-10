@@ -65,6 +65,10 @@ export class PedidoLoQueSeaComponent implements OnInit {
         this.form['fechaVencimientoTarjeta'].updateValueAndValidity();
         this.form['codigoSeguridadTarjeta'].updateValueAndValidity();
       });
+    this.form['totalAPagar'].valueChanges
+      .subscribe(() => {
+
+      })
   }
 
   get form() {
@@ -116,8 +120,8 @@ export class PedidoLoQueSeaComponent implements OnInit {
         conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)]],
       horaEntrega: [null, conditionalValidator(() => this.momentoEntrega === 'programar', Validators.required)],
       formaPago: [null, Validators.required],
+      totalAPagar: null,
       montoAAbonar: [null, [
-        Validators.min(50),
         Validators.max(999999),
         conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]],
       nroTarjeta: [null, [
@@ -168,7 +172,11 @@ export class PedidoLoQueSeaComponent implements OnInit {
     let hoy: string = moment().format('YYYY-MM-DD');
     let ahora: string = moment().format('HH:mm');
 
-    return !(hoy === fecha && hora < ahora);
+    if (hoy === fecha && hora < ahora) {
+      this.form['horaEntrega'].setErrors( { "horaInvalida": true });
+      return false;
+    }
+    return true;
   }
 
   confirmarPedido() {
@@ -213,6 +221,13 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   calcularTotal(): number {
     this.totalAPagar = (this.distancia / 0.5) * 250;
+    if (this.totalAPagar < 250) this.totalAPagar = 250;
+
+    this.form['montoAAbonar'].setValidators([
+      Validators.min(this.totalAPagar),
+      Validators.max(999999),
+      conditionalValidator(() => this.formaPago === 'efectivo', Validators.required)]);
+
     return this.totalAPagar;
   }
 }

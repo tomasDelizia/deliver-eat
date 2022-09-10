@@ -320,9 +320,9 @@
 
       <hr>
 
-      <div>
+      <div *ngIf="completoDirecciones()">
         <!--campos Total a pagar-->
-        <div class="row form-group my-3 text-uppercase lead" *ngIf="completoDirecciones()">
+        <div class="row form-group my-3 text-uppercase lead">
           <label class="col-form-label col-auto col-sm-3" for="distanciaPedido">
             Distancia del pedido
           </label>
@@ -334,11 +334,9 @@
             Total a pagar
           </label>
 
-          <div class="col-form-label col-4 col-sm-2">
+          <div class="col-form-label col-4 col-sm-2" formControlName="totalAPagar">
             <b id="totalAPagar">$ {{calcularTotal()}}</b>
           </div>
-        </div>
-
         </div>
 
         <!--campos Forma de pago-->
@@ -380,13 +378,12 @@
           </div>
 
           <div class="text-danger col-sm-auto" *ngIf="form['montoAAbonar'].errors?.['min']">
-            El monto mínimo es de $ 100.
+            El monto a pagar debe ser mayor al monto total.
           </div>
 
           <div class="text-danger col-sm-auto" *ngIf="form['montoAAbonar'].errors?.['max']">
             El monto máximo es de $ 999.999.
           </div>
-
         </div>
 
         <!--campos de Tarjeta-->
@@ -448,7 +445,7 @@
               </div>
 
               <div class="text-danger" *ngIf="form['fechaVencimientoTarjeta'].errors?.['pattern']">
-                La fecha de vencimiento debe ser mayor al mes actual.
+                Ingrese una fecha de vencimiento correcta.
               </div>
             </div>
 
