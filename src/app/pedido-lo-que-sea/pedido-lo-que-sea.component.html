@@ -108,7 +108,7 @@
         <!--Mapa interactivo-->
         <div class="row form-group my-3" *ngIf="ciudadComercio">
           <google-map height="400px" width="100%" [center]="posicion" [zoom]="zoom" (mapClick)="agregarMarcador($event)">
-            <map-marker *ngIf="posicionMarcador"
+            <map-marker *ngIf="agregoMarcador"
               [position]="posicionMarcador"
               [options]="opcionesMarcador">
             </map-marker>
@@ -334,7 +334,7 @@
             Total a pagar
           </label>
 
-          <div class="col-form-label col-4 col-sm-2" formControlName="totalAPagar">
+          <div class="col-form-label col-4 col-sm-2">
             <b id="totalAPagar">$ {{calcularTotal()}}</b>
           </div>
         </div>

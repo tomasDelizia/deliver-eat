@@ -24,7 +24,9 @@ export class PedidoLoQueSeaComponent implements OnInit {
 
   zoom: number = 15;
 
-  posicionMarcador: google.maps.LatLngLiteral | null;
+  posicionMarcador: google.maps.LatLngLiteral;
+
+  agregoMarcador: boolean = false;
 
   opcionesMarcador: google.maps.MarkerOptions = { draggable: false };
 
@@ -43,6 +45,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
       .subscribe((valor) => {
         let ciudad: Ciudad = ciudades.find(c => c.id === valor) as Ciudad;
         this.posicion = ciudad.posicion;
+        this.posicionMarcador = ciudad.posicion;
       })
 
     // Actualiza valores y validez de los campos piso y letra de departamento ante un cambio en el checkbox.
@@ -208,7 +211,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
     this.submitted = false;
     this.formPedido.reset({ ciudadComercio: 1 });
     this.formPedido.markAsUntouched();
-    this.posicionMarcador = null;
+    this.agregoMarcador = false;
     this.urlImagen = '';
   }
 
@@ -217,6 +220,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
    * @param evento toque en una parte del mapa por parte del usuario.
    */
   agregarMarcador(evento: google.maps.MapMouseEvent): void {
+    this.agregoMarcador = true;
     if (evento.latLng != null) this.posicionMarcador = evento.latLng.toJSON();
 
     // Obtiene la dirección del comercio de manera aleatoria.
@@ -243,11 +247,22 @@ export class PedidoLoQueSeaComponent implements OnInit {
    * Calcula la distancia en kilómetros entre la dirección de comercio y la dirección de entrega del pedido.
    */
   calcularDistancia(): number {
-    let ciudadDomicilio: Ciudad = ciudades.find(c => c.id === this.ciudadDomicilio) as Ciudad;
-    let posicionMarcador: google.maps.LatLngLiteral = this.posicionMarcador as google.maps.LatLngLiteral;
+    let posicionDomicilio: google.maps.LatLngLiteral
+      = (ciudades.find(c => c.id === this.ciudadDomicilio) as Ciudad).posicion;
 
+    let posicionComercio: google.maps.LatLngLiteral;
+    // Si agregó un marcador para la dirección del comercio, tomo esa dirección.
+    if (this.posicionMarcador) posicionComercio = this.posicionMarcador as google.maps.LatLngLiteral;
+    // Si no, se obtiene de manera aleatoria.
+    else {
+      // Obtiene la latitud y longitud del comercio de manera aleatoria.
+      let indice: number = Math.floor(Math.random() * 5);
+      let direccionRnd: DireccionEntrega = direccionesEntrega.filter(d => d.ciudad.id === this.ciudadComercio)[indice];
+      posicionComercio = direccionRnd.posicion;
+      this.posicionMarcador = posicionComercio;
+    }
     this.distancia = Number((google.maps.geometry.spherical.computeLength([
-      ciudadDomicilio.posicion, posicionMarcador]) / 1000).toFixed(2));
+      posicionDomicilio, posicionComercio]) / 1000).toFixed(2));
     return this.distancia;
   }
 
@@ -256,7 +271,7 @@ export class PedidoLoQueSeaComponent implements OnInit {
    */
   calcularTotal(): number {
     this.totalAPagar = (this.distancia / 0.5) * 250;
-    if (this.totalAPagar < 250) this.totalAPagar = 250;
+    if (this.distancia < 0.5) this.totalAPagar = 250;
 
     this.form['montoAAbonar'].setValidators([
       Validators.min(this.totalAPagar),
