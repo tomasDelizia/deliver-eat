@@ -313,6 +313,11 @@
               *ngIf="(form['horaEntrega'].touched || submitted) && !esHoraValida(form['fechaEntrega'].value, form['horaEntrega'].value)">
               La hora no debe ser menor a la actual.
             </div>
+
+            <div class="text-danger col-sm-auto"
+              *ngIf="(form['horaEntrega'].touched || submitted) && !esEnHoraEntrega(form['horaEntrega'].value)">
+              El horario de entregas es de 08:00 a 00:00
+            </div>
           </div>
         </div>
 

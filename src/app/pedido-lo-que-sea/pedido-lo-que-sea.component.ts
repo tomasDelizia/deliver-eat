@@ -199,6 +199,21 @@ export class PedidoLoQueSeaComponent implements OnInit {
   }
 
   /**
+   * Devuelve falso si la hora está en el horario de entrega de 08:00 a 00:00
+   * @param hora la hora seleccionada por el usuario.
+   */
+   esEnHoraEntrega(hora: string): boolean {
+    let ahora: string = moment().format('HH:mm');
+
+    // Pregunta si la fecha es actual y la hora anterior a la hora actual.
+    if (hora > '00:00' && hora < '08:00') {
+      this.form['horaEntrega'].setErrors( { "noEstaEnHorario": true });
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * Marca el formulario como enviado, comprueba las validaciones de los campos y, si pasan, alerta el éxito
    * por pantalla.
    */
